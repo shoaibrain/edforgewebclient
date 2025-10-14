@@ -125,12 +125,6 @@ export default async function StudentProfilePage({ params }: StudentProfilePageP
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-4">
-					<Button variant="ghost" size="sm" asChild>
-						<Link href="/dashboard/students" className="flex items-center gap-2">
-							<ArrowLeft className="h-4 w-4" />
-							Back to Students
-						</Link>
-					</Button>
 					<div className="flex items-center gap-4">
 						{/* Student Avatar */}
 						<div className="relative">
@@ -185,61 +179,61 @@ export default async function StudentProfilePage({ params }: StudentProfilePageP
 				</div>
 			</div>
 
-			{/* Student Overview Cards */}
-			<div className="grid gap-4 md:grid-cols-4">
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Overall GPA</CardTitle>
-						<GraduationCap className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold text-primary">
-							{student.overallGPA.toFixed(2)}
+			{/* Professional Compact Student Overview Cards */}
+			<div className="grid gap-2 md:grid-cols-4">
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardContent className="p-3">
+						<div className="flex items-center justify-between">
+							<div className="min-w-0 flex-1">
+								<p className="text-xs font-medium text-muted-foreground mb-0.5">Overall GPA</p>
+								<p className="text-lg font-semibold text-primary">
+									{student.overallGPA.toFixed(2)}
+								</p>
+								<p className="text-xs text-muted-foreground/70">{student.grade} Student</p>
+							</div>
+							<GraduationCap className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
 						</div>
-						<p className="text-xs text-muted-foreground">
-							{student.grade} Student
-						</p>
 					</CardContent>
 				</Card>
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Average Score</CardTitle>
-						<Activity className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold text-primary">{averageScore}%</div>
-						<p className="text-xs text-muted-foreground">
-							{student.performanceData.length} categories
-						</p>
-					</CardContent>
-				</Card>
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Classes Enrolled</CardTitle>
-						<BookOpen className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">{student.classes.length}</div>
-						<p className="text-xs text-muted-foreground">
-							{student.classes.reduce((sum, cls) => sum + cls.credits, 0)} credits
-						</p>
-					</CardContent>
-				</Card>
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Attendance Rate</CardTitle>
-						<Calendar className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">
-							{Math.round(
-								student.classes.reduce((sum, cls) => sum + getAttendancePercentage(cls.attendance), 0) /
-									student.classes.length,
-							)}%
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardContent className="p-3">
+						<div className="flex items-center justify-between">
+							<div className="min-w-0 flex-1">
+								<p className="text-xs font-medium text-muted-foreground mb-0.5">Average Score</p>
+								<p className="text-lg font-semibold text-foreground">{averageScore}%</p>
+								<p className="text-xs text-muted-foreground/70">{student.performanceData.length} categories</p>
+							</div>
+							<Activity className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
 						</div>
-						<p className="text-xs text-muted-foreground">
-							Overall attendance
-						</p>
+					</CardContent>
+				</Card>
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardContent className="p-3">
+						<div className="flex items-center justify-between">
+							<div className="min-w-0 flex-1">
+								<p className="text-xs font-medium text-muted-foreground mb-0.5">Classes Enrolled</p>
+								<p className="text-lg font-semibold text-foreground">{student.classes.length}</p>
+								<p className="text-xs text-muted-foreground/70">{student.classes.reduce((sum, cls) => sum + cls.credits, 0)} credits</p>
+							</div>
+							<BookOpen className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
+						</div>
+					</CardContent>
+				</Card>
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardContent className="p-3">
+						<div className="flex items-center justify-between">
+							<div className="min-w-0 flex-1">
+								<p className="text-xs font-medium text-muted-foreground mb-0.5">Attendance Rate</p>
+								<p className="text-lg font-semibold text-foreground">
+									{Math.round(
+										student.classes.reduce((sum, cls) => sum + getAttendancePercentage(cls.attendance), 0) /
+											student.classes.length,
+									)}%
+								</p>
+								<p className="text-xs text-muted-foreground/70">Overall attendance</p>
+							</div>
+							<Calendar className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
+						</div>
 					</CardContent>
 				</Card>
 			</div>
@@ -563,60 +557,60 @@ export default async function StudentProfilePage({ params }: StudentProfilePageP
 				</Card>
 			</div>
 
-			{/* Extracurricular Activities & Awards */}
-			<div className="grid gap-6 md:grid-cols-2">
-				<Card className="bg-gradient-to-br from-success/5 to-success/10 border-success/20">
-					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<div className="h-2 w-2 rounded-full bg-success"></div>
+			{/* Extracurricular Activities & Awards - Compact Design */}
+			<div className="grid gap-4 md:grid-cols-2">
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardHeader className="pb-3">
+						<CardTitle className="flex items-center gap-2 text-lg">
+							<Activity className="h-5 w-5 text-primary" />
 							Extracurricular Activities
 						</CardTitle>
-						<CardDescription>
+						<CardDescription className="text-sm">
 							Student involvement beyond academics
 						</CardDescription>
 					</CardHeader>
-					<CardContent>
+					<CardContent className="pt-0">
 						{student.extracurriculars && student.extracurriculars.length > 0 ? (
 							<div className="flex flex-wrap gap-2">
 								{student.extracurriculars.map((activity, index) => (
-									<Badge key={index} variant="secondary" className="bg-success/20 text-success-foreground hover:bg-success/30">
+									<Badge key={index} variant="secondary" className="text-xs">
 										{activity}
 									</Badge>
 								))}
 							</div>
 						) : (
-							<div className="text-center py-8">
-								<Activity className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-								<p className="text-sm text-muted-foreground">No extracurricular activities recorded.</p>
+							<div className="text-center py-4">
+								<Activity className="h-6 w-6 text-muted-foreground mx-auto mb-1" />
+								<p className="text-xs text-muted-foreground">No activities recorded</p>
 							</div>
 						)}
 					</CardContent>
 				</Card>
 
-				<Card className="bg-gradient-to-br from-warning/5 to-warning/10 border-warning/20">
-					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<div className="h-2 w-2 rounded-full bg-warning"></div>
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardHeader className="pb-3">
+						<CardTitle className="flex items-center gap-2 text-lg">
+							<Award className="h-5 w-5 text-primary" />
 							Awards & Achievements
 						</CardTitle>
-						<CardDescription>
+						<CardDescription className="text-sm">
 							Recognition and accomplishments
 						</CardDescription>
 					</CardHeader>
-					<CardContent>
+					<CardContent className="pt-0">
 						{student.awards && student.awards.length > 0 ? (
-							<div className="space-y-3">
+							<div className="space-y-2">
 								{student.awards.map((award, index) => (
-									<div key={index} className="flex items-center gap-3 p-2 rounded-lg bg-warning/10 border border-warning/20">
-										<Award className="h-4 w-4 text-warning flex-shrink-0" />
-										<span className="text-sm font-medium">{award}</span>
+									<div key={index} className="flex items-center gap-2 p-2 rounded-md bg-muted/30 border border-border/50">
+										<Award className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+										<span className="text-xs font-medium text-foreground">{award}</span>
 									</div>
 								))}
 							</div>
 						) : (
-							<div className="text-center py-8">
-								<Award className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-								<p className="text-sm text-muted-foreground">No awards recorded yet.</p>
+							<div className="text-center py-4">
+								<Award className="h-6 w-6 text-muted-foreground mx-auto mb-1" />
+								<p className="text-xs text-muted-foreground">No awards recorded</p>
 							</div>
 						)}
 					</CardContent>

@@ -7,8 +7,6 @@
  * Different users see different dashboards based on their role.
  */
 
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useUser } from "@/contexts/user-context";
 import { UserRole, getRoleDisplayName } from "@/types/rbac";
 import { DashboardSkeleton } from "@/components/dashboard-skeleton";
@@ -46,40 +44,21 @@ export default function DashboardPage() {
 	}
 
   return (
-		<>
-			{/* Header */}
-			<header className="flex h-16 shrink-0 items-center gap-2 border-b border-border bg-background transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-				<div className="flex items-center gap-2 px-4 w-full">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-						className="mr-2 h-4"
-					/>
-					<div className="flex-1">
-						<h1 className="text-lg font-semibold">Dashboard</h1>
-						<p className="text-sm text-muted-foreground">
-							Welcome back, {user.name}
-						</p>
-					</div>
-					<div className="text-right">
-						<p className="text-sm font-medium">{user.tenantName}</p>
-						<p className="text-xs text-muted-foreground">
-							{getRoleDisplayName(user.role)}
-						</p>
-					</div>
-          </div>
-        </header>
-
-			{/* Main Content */}
-			<div className="flex flex-1 flex-col gap-6 p-6">
-				{/* Role-Specific Dashboard Content */}
-				{user.role === UserRole.TENANT_ADMIN && <TenantAdminDashboard />}
-				{user.role === UserRole.PRINCIPAL && <PrincipalDashboard />}
-				{user.role === UserRole.TEACHER && <TeacherDashboard />}
-				{user.role === UserRole.STUDENT && <StudentDashboard />}
-				{user.role === UserRole.PARENT && <ParentDashboard />}
+		<div className="flex flex-1 flex-col gap-6 p-6">
+			{/* Welcome Message */}
+			<div className="mb-2">
+				<p className="text-sm text-muted-foreground">
+					Welcome back, {user.name}
+				</p>
 			</div>
-		</>
+			
+			{/* Role-Specific Dashboard Content */}
+			{user.role === UserRole.TENANT_ADMIN && <TenantAdminDashboard />}
+			{user.role === UserRole.PRINCIPAL && <PrincipalDashboard />}
+			{user.role === UserRole.TEACHER && <TeacherDashboard />}
+			{user.role === UserRole.STUDENT && <StudentDashboard />}
+			{user.role === UserRole.PARENT && <ParentDashboard />}
+		</div>
 	);
 }
 

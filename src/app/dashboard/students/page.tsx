@@ -147,79 +147,73 @@ export default function StudentsPage() {
 
 	return (
 		<div className="flex flex-1 flex-col gap-6 p-6">
-			{/* Header */}
+			{/* Header - Simplified */}
 			<div className="flex items-center justify-between">
-				<div>
-					<h1 className="text-3xl font-bold tracking-tight">Students</h1>
-					<p className="text-muted-foreground">
-						Manage and view student information, academic records, and performance metrics.
-					</p>
-				</div>
 				<div className="flex items-center gap-2">
-					<Users className="h-5 w-5 text-muted-foreground" />
+					<Users className="h-4 w-4 text-muted-foreground" />
 					<span className="text-sm text-muted-foreground">
 						{students.length} student{students.length !== 1 ? "s" : ""}
 					</span>
 				</div>
 			</div>
 
-			{/* Stats Cards */}
-			<div className="grid gap-4 md:grid-cols-4">
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Total Students</CardTitle>
-						<Users className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">{getAllStudents().length}</div>
-						<p className="text-xs text-muted-foreground">
-							+12% from last semester
-						</p>
-					</CardContent>
-				</Card>
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Active Students</CardTitle>
-						<GraduationCap className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">
-							{getAllStudents().filter((s) => s.status === "active").length}
+			{/* Professional Compact Stats Cards */}
+			<div className="grid gap-2 md:grid-cols-4">
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardContent className="p-3">
+						<div className="flex items-center justify-between">
+							<div className="min-w-0 flex-1">
+								<p className="text-xs font-medium text-muted-foreground mb-0.5">Total Students</p>
+								<p className="text-lg font-semibold text-foreground">{getAllStudents().length}</p>
+								<p className="text-xs text-muted-foreground/70">+12% from last semester</p>
+							</div>
+							<Users className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
 						</div>
-						<p className="text-xs text-muted-foreground">
-							Currently enrolled
-						</p>
 					</CardContent>
 				</Card>
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Average GPA</CardTitle>
-						<Award className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">
-							{(
-								getAllStudents()
-									.filter((s) => s.status === "active")
-									.reduce((sum, s) => sum + s.overallGPA, 0) /
-								getAllStudents().filter((s) => s.status === "active").length
-							).toFixed(2)}
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardContent className="p-3">
+						<div className="flex items-center justify-between">
+							<div className="min-w-0 flex-1">
+								<p className="text-xs font-medium text-muted-foreground mb-0.5">Active Students</p>
+								<p className="text-lg font-semibold text-foreground">
+									{getAllStudents().filter((s) => s.status === "active").length}
+								</p>
+								<p className="text-xs text-muted-foreground/70">Currently enrolled</p>
+							</div>
+							<GraduationCap className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
 						</div>
-						<p className="text-xs text-muted-foreground">
-							School average
-						</p>
 					</CardContent>
 				</Card>
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Graduation Rate</CardTitle>
-						<Calendar className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">94%</div>
-						<p className="text-xs text-muted-foreground">
-							Class of 2024
-						</p>
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardContent className="p-3">
+						<div className="flex items-center justify-between">
+							<div className="min-w-0 flex-1">
+								<p className="text-xs font-medium text-muted-foreground mb-0.5">Average GPA</p>
+								<p className="text-lg font-semibold text-primary">
+									{(
+										getAllStudents()
+											.filter((s) => s.status === "active")
+											.reduce((sum, s) => sum + s.overallGPA, 0) /
+										getAllStudents().filter((s) => s.status === "active").length
+									).toFixed(2)}
+								</p>
+								<p className="text-xs text-muted-foreground/70">School average</p>
+							</div>
+							<Award className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
+						</div>
+					</CardContent>
+				</Card>
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardContent className="p-3">
+						<div className="flex items-center justify-between">
+							<div className="min-w-0 flex-1">
+								<p className="text-xs font-medium text-muted-foreground mb-0.5">Graduation Rate</p>
+								<p className="text-lg font-semibold text-foreground">94%</p>
+								<p className="text-xs text-muted-foreground/70">Class of 2024</p>
+							</div>
+							<Calendar className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
+						</div>
 					</CardContent>
 				</Card>
 			</div>

@@ -11,7 +11,6 @@ import * as React from "react";
 import { GraduationCap } from "lucide-react";
 import { NavRBAC } from "@/components/nav-rbac";
 import { NavUser } from "@/components/nav-user";
-import { UserSwitcher } from "@/components/user-switcher";
 import {
 	Sidebar,
 	SidebarContent,
@@ -88,11 +87,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
-
-				{/* User Switcher for Testing */}
-				<div className="px-2 py-2">
-					<UserSwitcher />
-				</div>
 			</SidebarHeader>
 
 			<SidebarContent className="sidebar-scroll">

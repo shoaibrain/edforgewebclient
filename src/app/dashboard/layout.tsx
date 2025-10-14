@@ -4,11 +4,13 @@
  * This layout wraps all dashboard pages with:
  * - User context for RBAC
  * - Sidebar navigation
+ * - Persistent top navigation
  * - Main content area
  */
 
 import { UserProvider } from "@/contexts/user-context";
 import { AppSidebar } from "@/components/app-sidebar";
+import { DashboardHeader } from "@/components/dashboard-header";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
@@ -20,7 +22,10 @@ export default function DashboardLayout({
 		<UserProvider>
 			<SidebarProvider>
 				<AppSidebar />
-				<SidebarInset>{children}</SidebarInset>
+				<SidebarInset>
+					<DashboardHeader />
+					{children}
+				</SidebarInset>
 			</SidebarProvider>
 		</UserProvider>
 	);

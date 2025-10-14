@@ -192,66 +192,68 @@ export default function ClassroomManagementPage() {
 
 	return (
 		<div className="flex flex-1 flex-col gap-6 p-6">
-			{/* Header Section */}
+			{/* Header Section - Simplified */}
 			<div className="flex items-center justify-between">
-				<div>
-					<h1 className="text-3xl font-bold tracking-tight">Classroom Management</h1>
-					<p className="text-muted-foreground">
-						Create, manage, and organize classrooms across all grade levels and subjects.
-					</p>
+				<div className="flex items-center gap-4">
+					{canCreateClassroom && (
+						<Button asChild size="sm">
+							<Link href="/dashboard/curriculum/classes/create">
+								<Plus className="mr-2 h-4 w-4" />
+								Create Classroom
+							</Link>
+						</Button>
+					)}
 				</div>
-				{canCreateClassroom && (
-					<Button asChild>
-						<Link href="/dashboard/curriculum/classes/create">
-							<Plus className="mr-2 h-4 w-4" />
-							Create Classroom
-						</Link>
-					</Button>
-				)}
 			</div>
 
-			{/* Statistics Cards */}
-			<div className="grid gap-4 md:grid-cols-4">
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Total Classrooms</CardTitle>
-						<BookOpen className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">{stats.totalClassrooms}</div>
-						<p className="text-xs text-muted-foreground">
-							{stats.activeClassrooms} active this semester
-						</p>
+			{/* Professional Compact Statistics Cards */}
+			<div className="grid gap-2 md:grid-cols-4">
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardContent className="p-3">
+						<div className="flex items-center justify-between">
+							<div className="min-w-0 flex-1">
+								<p className="text-xs font-medium text-muted-foreground mb-0.5">Total Classrooms</p>
+								<p className="text-lg font-semibold text-foreground">{stats.totalClassrooms}</p>
+								<p className="text-xs text-muted-foreground/70">{stats.activeClassrooms} active</p>
+							</div>
+							<BookOpen className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
+						</div>
 					</CardContent>
 				</Card>
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Total Students</CardTitle>
-						<Users className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">{stats.totalStudents}</div>
-						<p className="text-xs text-muted-foreground">Currently enrolled</p>
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardContent className="p-3">
+						<div className="flex items-center justify-between">
+							<div className="min-w-0 flex-1">
+								<p className="text-xs font-medium text-muted-foreground mb-0.5">Total Students</p>
+								<p className="text-lg font-semibold text-foreground">{stats.totalStudents}</p>
+								<p className="text-xs text-muted-foreground/70">Currently enrolled</p>
+							</div>
+							<Users className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
+						</div>
 					</CardContent>
 				</Card>
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Avg. Capacity</CardTitle>
-						<Users className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold text-primary">{stats.averageUtilization}%</div>
-						<p className="text-xs text-muted-foreground">Utilization rate</p>
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardContent className="p-3">
+						<div className="flex items-center justify-between">
+							<div className="min-w-0 flex-1">
+								<p className="text-xs font-medium text-muted-foreground mb-0.5">Avg. Capacity</p>
+								<p className="text-lg font-semibold text-primary">{stats.averageUtilization}%</p>
+								<p className="text-xs text-muted-foreground/70">Utilization rate</p>
+							</div>
+							<BarChart3 className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
+						</div>
 					</CardContent>
 				</Card>
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Active Teachers</CardTitle>
-						<Users className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">{stats.activeTeachers}</div>
-						<p className="text-xs text-muted-foreground">Teaching this year</p>
+				<Card className="bg-card border-border hover:bg-muted/50 transition-colors">
+					<CardContent className="p-3">
+						<div className="flex items-center justify-between">
+							<div className="min-w-0 flex-1">
+								<p className="text-xs font-medium text-muted-foreground mb-0.5">Active Teachers</p>
+								<p className="text-lg font-semibold text-foreground">{stats.activeTeachers}</p>
+								<p className="text-xs text-muted-foreground/70">Teaching this year</p>
+							</div>
+							<Users className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
+						</div>
 					</CardContent>
 				</Card>
 			</div>

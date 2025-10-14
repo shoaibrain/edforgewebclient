@@ -218,31 +218,21 @@ export default function CreateClassroomPage() {
 
 	return (
 		<div className="flex flex-1 flex-col gap-6 p-6">
-			{/* Header */}
+			{/* Simplified Header - Only Navigation and Actions */}
 			<div className="flex items-center justify-between">
-				<div className="flex items-center gap-4">
-					<Button variant="ghost" size="sm" asChild>
-						<Link href="/dashboard/curriculum/classes" className="flex items-center gap-2">
-							<ArrowLeft className="h-4 w-4" />
-							Back to Classes
-						</Link>
-					</Button>
-					<div>
-						<h1 className="text-3xl font-bold tracking-tight">Create Classroom</h1>
-						<p className="text-muted-foreground">
-							Set up a new classroom with custom branding and settings
-						</p>
-					</div>
-				</div>
-				<div className="flex items-center gap-2">
-					<Button
-						variant="outline"
-						onClick={() => setShowPreview(!showPreview)}
-					>
-						{showPreview ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
-						{showPreview ? "Hide Preview" : "Preview"}
-					</Button>
-				</div>
+				{/* <Button variant="ghost" size="sm" asChild>
+					<Link href="/dashboard/curriculum/classes" className="flex items-center gap-2">
+						<ArrowLeft className="h-4 w-4" />
+						Back to Classes
+					</Link>
+				</Button> */}
+				<Button
+					variant="outline"
+					onClick={() => setShowPreview(!showPreview)}
+				>
+					{showPreview ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
+					{showPreview ? "Hide Preview" : "Preview"}
+				</Button>
 			</div>
 
 			<div className="grid gap-6 lg:grid-cols-3">
