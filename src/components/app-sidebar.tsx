@@ -21,47 +21,19 @@ import {
 	SidebarMenuItem,
 	SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { useUser } from "@/contexts/user-context";
+import type { User } from "@/types/rbac";
 import { DASHBOARD_NAVIGATION } from "@/config/navigation";
 import { getRoleDisplayName } from "@/types/rbac";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-	const { user, isLoading } = useUser();
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+	user: User;
+}
 
-	// Loading state
-	if (isLoading) {
-		return (
-			<Sidebar collapsible="icon" {...props}>
-				<SidebarHeader>
-					<div className="p-4">
-						<div className="h-10 w-full bg-muted animate-pulse rounded-lg" />
-					</div>
-				</SidebarHeader>
-				<SidebarContent>
-					<div className="p-4 space-y-2">
-						<div className="h-8 w-full bg-muted animate-pulse rounded-lg" />
-						<div className="h-8 w-full bg-muted animate-pulse rounded-lg" />
-						<div className="h-8 w-full bg-muted animate-pulse rounded-lg" />
-					</div>
-				</SidebarContent>
-				<SidebarRail />
-			</Sidebar>
-		);
-	}
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
 
-	// No user state
-	if (!user) {
-		return (
-			<Sidebar collapsible="icon" {...props}>
-				<SidebarHeader>
-					<div className="p-4 text-center text-muted-foreground">
-						<p>No user logged in</p>
-					</div>
-				</SidebarHeader>
-				<SidebarRail />
-			</Sidebar>
-		);
-	}
+	// No loading state needed since user is passed as prop
+
+	// User is guaranteed to be provided as prop
 
 	return (
 		<Sidebar collapsible="icon" {...props}>
@@ -91,7 +63,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
 			<SidebarContent className="sidebar-scroll">
 				{/* Main Navigation - Filtered by RBAC */}
-				<NavRBAC items={DASHBOARD_NAVIGATION} label="Menu" />
+				<NavRBAC items={DASHBOARD_NAVIGATION} user={user} label="Menu" />
 			</SidebarContent>
 
 			<SidebarFooter>

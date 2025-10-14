@@ -18,9 +18,9 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUser } from "@/contexts/user-context";
+import type { User } from "@/types/rbac";
 import { UserRole, getRoleDisplayName, getRoleColor } from "@/types/rbac";
-import { ChevronsUpDown, User, Settings, LogOut } from "lucide-react";
+import { ChevronsUpDown, User as UserIcon, Settings, LogOut } from "lucide-react";
 
 // Mock users for switching (in real app, this would come from API)
 const mockUsers = [
@@ -53,10 +53,12 @@ const mockUsers = [
 	},
 ];
 
-export function DashboardUserSwitcher() {
-	const { user, setUser } = useUser();
-	
-	if (!user) return null;
+interface DashboardUserSwitcherProps {
+	user: User;
+}
+
+export function DashboardUserSwitcher({ user }: DashboardUserSwitcherProps) {
+	const [selectedUser, setSelectedUser] = useState(user);
 	
 	return (
 		<DropdownMenu>
@@ -68,15 +70,15 @@ export function DashboardUserSwitcher() {
 				>
 					<Avatar className="h-6 w-6 flex-shrink-0">
 						<AvatarFallback className="text-xs bg-muted-foreground/20 text-muted-foreground font-medium">
-							{user.avatar}
+							{selectedUser.avatar}
 						</AvatarFallback>
 					</Avatar>
 					<div className="flex flex-col items-start min-w-0">
 						<span className="text-xs font-medium truncate max-w-[100px] text-muted-foreground">
-							{user.name}
+							{selectedUser.name}
 						</span>
 						<span className="text-xs truncate max-w-[100px] text-muted-foreground/70">
-							{getRoleDisplayName(user.role)}
+							{getRoleDisplayName(selectedUser.role)}
 						</span>
 					</div>
 					<ChevronsUpDown className="h-3 w-3 opacity-40 flex-shrink-0" />
@@ -85,12 +87,12 @@ export function DashboardUserSwitcher() {
 			<DropdownMenuContent align="end" className="w-56">
 				<DropdownMenuLabel className="font-normal">
 					<div className="flex flex-col space-y-1">
-						<p className="text-sm font-medium leading-none">{user.name}</p>
+						<p className="text-sm font-medium leading-none">{selectedUser.name}</p>
 						<p className="text-xs leading-none text-muted-foreground">
-							{user.email}
+							{selectedUser.email}
 						</p>
 						<p className="text-xs leading-none text-muted-foreground">
-							{user.tenantName}
+							{selectedUser.tenantName}
 						</p>
 					</div>
 				</DropdownMenuLabel>
@@ -101,11 +103,11 @@ export function DashboardUserSwitcher() {
 					Switch User
 				</DropdownMenuLabel>
 				{mockUsers
-					.filter(mockUser => mockUser.id !== user.id)
+					.filter(mockUser => mockUser.id !== selectedUser.id)
 					.map((mockUser) => (
 						<DropdownMenuItem
 							key={mockUser.id}
-							onClick={() => setUser(mockUser)}
+							onClick={() => setSelectedUser(mockUser)}
 							className="flex items-center gap-2"
 						>
 							<Avatar className="h-6 w-6">
@@ -126,7 +128,7 @@ export function DashboardUserSwitcher() {
 				
 				{/* User Actions */}
 				<DropdownMenuItem className="flex items-center gap-2">
-					<User className="h-4 w-4" />
+					<UserIcon className="h-4 w-4" />
 					Profile
 				</DropdownMenuItem>
 				<DropdownMenuItem className="flex items-center gap-2">

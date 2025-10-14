@@ -11,6 +11,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useHydrationSafeState } from "@/hooks/use-hydration-safe-state";
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -27,19 +28,18 @@ import {
 	SidebarMenuSubItem,
 	SidebarMenuBadge,
 } from "@/components/ui/sidebar";
-import { useUser } from "@/contexts/user-context";
 import { filterNavItemsByPermissions } from "@/types/rbac";
-import type { NavItem } from "@/types/rbac";
+import type { NavItem, User } from "@/types/rbac";
 
 interface NavRBACProps {
 	items: NavItem[];
+	user: User;
 	label?: string;
 }
 
-export function NavRBAC({ items, label = "Navigation" }: NavRBACProps) {
-	const { user } = useUser();
+export function NavRBAC({ items, user, label = "Navigation" }: NavRBACProps) {
 	const pathname = usePathname();
-
+	
 	if (!user) {
 		return null;
 	}
@@ -51,6 +51,9 @@ export function NavRBAC({ items, label = "Navigation" }: NavRBACProps) {
 		return null;
 	}
 
+	// Use hydration-safe state for pathname to prevent server/client mismatch
+	const safePathname = useHydrationSafeState("", pathname);
+
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel>{label}</SidebarGroupLabel>
@@ -61,7 +64,8 @@ export function NavRBAC({ items, label = "Navigation" }: NavRBACProps) {
 								item.icon as keyof typeof LucideIcons
 							] as React.ComponentType<{ className?: string }>)
 						: null;
-					const isActive = pathname === item.url || pathname?.startsWith(`${item.url}/`);
+					// Use safe pathname to prevent server/client mismatch
+					const isActive = safePathname === item.url || safePathname?.startsWith(`${item.url}/`);
 
 					// Item with sub-items
 					if (item.items && item.items.length > 0) {
@@ -69,8 +73,9 @@ export function NavRBAC({ items, label = "Navigation" }: NavRBACProps) {
 							<Collapsible
 								key={item.title}
 								asChild
-								defaultOpen={isActive}
+								defaultOpen={false}
 								className="group/collapsible"
+								suppressHydrationWarning
 							>
 								<SidebarMenuItem>
 									<CollapsibleTrigger asChild>
@@ -91,7 +96,7 @@ export function NavRBAC({ items, label = "Navigation" }: NavRBACProps) {
 									<CollapsibleContent>
 										<SidebarMenuSub>
 											{item.items.map((subItem) => {
-												const subIsActive = pathname === subItem.url;
+												const subIsActive = safePathname === subItem.url;
 												return (
 													<SidebarMenuSubItem key={subItem.title}>
 														<SidebarMenuSubButton

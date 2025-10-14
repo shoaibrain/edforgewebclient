@@ -1,27 +1,17 @@
-"use client";
-
 /**
  * EdForge EMIS - Student Profile Page
  * 
  * Comprehensive student profile with radar chart, academic details,
  * contact information, and performance analytics.
+ * 
+ * This is a Server Component for security and performance.
  */
 
-import * as React from "react";
 import { notFound } from "next/navigation";
-import { useUser } from "@/contexts/user-context";
+import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getStudentById } from "@/data/mock-students";
 import type { StudentProfile } from "@/types/student";
-import {
-	Radar,
-	RadarChart,
-	PolarGrid,
-	PolarAngleAxis,
-	PolarRadiusAxis,
-	ResponsiveContainer,
-	Legend,
-	Tooltip,
-} from "recharts";
+import { StudentPerformanceChart } from "@/components/student-performance-chart";
 import {
 	ArrowLeft,
 	Mail,
@@ -40,20 +30,15 @@ import {
 	Download,
 	Share,
 	MoreHorizontal,
+	AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { StudentProfileActions } from "@/components/student-profile-actions";
+import { Suspense } from "react";
 
 interface StudentProfilePageProps {
 	params: Promise<{
@@ -62,12 +47,38 @@ interface StudentProfilePageProps {
 }
 
 export default async function StudentProfilePage({ params }: StudentProfilePageProps) {
-	const { user } = useUser();
+	// Server-side authentication and authorization
+	const user = await getCurrentUser();
+	
+	if (!user) {
+		return (
+			<div className="flex h-screen items-center justify-center">
+				<div className="text-center">
+					<AlertCircle className="h-12 w-12 text-error mx-auto mb-4" />
+					<p className="text-muted-foreground">Authentication required</p>
+				</div>
+			</div>
+		);
+	}
+
 	const { studentId } = await params;
 	const student = getStudentById(studentId);
 
 	if (!student) {
 		notFound();
+	}
+
+	// Check permissions for viewing student details
+	const canViewStudentDetails = await hasPermission(user, "VIEW_STUDENT_DETAILS", studentId);
+	if (!canViewStudentDetails) {
+		return (
+			<div className="flex h-screen items-center justify-center">
+				<div className="text-center">
+					<AlertCircle className="h-12 w-12 text-error mx-auto mb-4" />
+					<p className="text-muted-foreground">You don't have permission to view this student</p>
+				</div>
+			</div>
+		);
 	}
 
 	// Calculate average performance
@@ -97,23 +108,6 @@ export default async function StudentProfilePage({ params }: StudentProfilePageP
 
 	const performanceLevel = getPerformanceLevel(averageScore);
 
-	// Custom tooltip for radar chart
-	const CustomTooltip = ({ active, payload }: any) => {
-		if (active && payload && payload.length) {
-			const data = payload[0].payload;
-			return (
-				<div className="bg-slate-800 border border-slate-600 rounded-lg p-3 shadow-xl backdrop-blur-sm">
-					<p className="font-semibold text-sm text-slate-100 mb-1">{data.category}</p>
-					<p className="text-xs text-slate-300 mb-2">{data.description}</p>
-					<div className="flex items-center gap-2">
-						<p className="text-lg font-bold text-blue-400">{data.score}%</p>
-						{getTrendIcon(data.trend)}
-					</div>
-				</div>
-			);
-		}
-		return null;
-	};
 
 	// Get attendance percentage
 	const getAttendancePercentage = (attendance: any) => {
@@ -121,7 +115,7 @@ export default async function StudentProfilePage({ params }: StudentProfilePageP
 	};
 
 	return (
-		<div className="flex flex-1 flex-col gap-6 p-6">
+		<div className="flex flex-1 flex-col gap-6 p-6 w-full">
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-4">
@@ -153,29 +147,7 @@ export default async function StudentProfilePage({ params }: StudentProfilePageP
 					<Badge className={`${performanceLevel.variant} text-sm px-3 py-1`}>
 						{performanceLevel.label}
 					</Badge>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="outline" size="sm">
-								<MoreHorizontal className="h-4 w-4" />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuLabel>Actions</DropdownMenuLabel>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem>
-								<Edit className="h-4 w-4 mr-2" />
-								Edit Profile
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<Download className="h-4 w-4 mr-2" />
-								Export Report
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<Share className="h-4 w-4 mr-2" />
-								Share Profile
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
+					<StudentProfileActions studentId={studentId} />
 				</div>
 			</div>
 
@@ -253,56 +225,16 @@ export default async function StudentProfilePage({ params }: StudentProfilePageP
 						</CardHeader>
 						<CardContent>
 							<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-								{/* Radar Chart - Takes 2/3 of the space */}
-								<div className="lg:col-span-2">
-									<ResponsiveContainer width="100%" height={400}>
-										<RadarChart data={student.performanceData}>
-											<PolarGrid 
-												stroke="#64748b" 
-												strokeWidth={1}
-												strokeOpacity={0.4}
-											/>
-											<PolarAngleAxis
-												dataKey="category"
-												tick={{ 
-													fill: "#f8fafc", 
-													fontSize: 11, 
-													fontWeight: 600 
-												}}
-												tickLine={{ stroke: "#94a3b8", strokeWidth: 1 }}
-											/>
-											<PolarRadiusAxis
-												angle={90}
-												domain={[0, 100]}
-												tick={{ 
-													fill: "#cbd5e1", 
-													fontSize: 10,
-													fontWeight: 500
-												}}
-												tickLine={{ stroke: "#94a3b8", strokeWidth: 1 }}
-												tickCount={6}
-											/>
-											<Radar
-												name="Performance Score"
-												dataKey="score"
-												stroke="#3b82f6"
-												fill="#3b82f6"
-												fillOpacity={0.3}
-												strokeWidth={3}
-												strokeOpacity={1}
-											/>
-											<Tooltip content={<CustomTooltip />} />
-											<Legend
-												wrapperStyle={{
-													paddingTop: "20px",
-													fontSize: "12px",
-													color: "#f8fafc",
-													fontWeight: 600
-												}}
-											/>
-										</RadarChart>
-									</ResponsiveContainer>
-								</div>
+							{/* Radar Chart - Takes 2/3 of the space */}
+							<div className="lg:col-span-2">
+								<StudentPerformanceChart 
+									data={student.performanceData.map(item => ({
+										subject: item.category,
+										score: item.score,
+										fullMark: 100
+									}))} 
+								/>
+							</div>
 
 								{/* Integrated Performance Overview - Takes 1/3 of the space */}
 								<div className="lg:col-span-1 space-y-4">

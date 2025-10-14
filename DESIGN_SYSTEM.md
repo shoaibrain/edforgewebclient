@@ -526,7 +526,3 @@ xl:  1280px  /* Extra large devices (desktops) */
 
 This design system is part of EdForge EMIS.
 
----
-
-**Built with ❤️ for Education**
-

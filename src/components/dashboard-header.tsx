@@ -5,12 +5,13 @@
  * 
  * Persistent header component that appears on all dashboard pages.
  * Contains the sidebar trigger, page title, and user controls.
+ * 
+ * This is a Client Component for interactivity (sidebar trigger, user switcher).
  */
 
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { useUser } from "@/contexts/user-context";
-import { getRoleDisplayName } from "@/types/rbac";
+import type { User } from "@/types/rbac";
 import { DashboardUserSwitcher } from "@/components/dashboard-user-switcher";
 import { usePathname } from "next/navigation";
 
@@ -67,8 +68,11 @@ function getPageTitle(pathname: string): { title: string; description?: string }
 	return { title: formattedTitle };
 }
 
-export function DashboardHeader() {
-	const { user } = useUser();
+interface DashboardHeaderProps {
+	user: User;
+}
+
+export function DashboardHeader({ user }: DashboardHeaderProps) {
 	const pathname = usePathname();
 	
 	const { title, description } = getPageTitle(pathname);
@@ -92,7 +96,7 @@ export function DashboardHeader() {
 				
 				{/* User Controls */}
 				<div className="flex items-center gap-3">
-					<DashboardUserSwitcher />
+					<DashboardUserSwitcher user={user} />
 				</div>
 			</div>
 		</header>

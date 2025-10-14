@@ -36,19 +36,17 @@ export function ThemeProvider({
 	React.useEffect(() => {
 		const root = window.document.documentElement;
 
-		root.classList.remove("light", "dark");
+		// Only apply theme if it hasn't been applied by the script already
+		// This prevents unnecessary class changes during hydration
+		const currentTheme = theme === "system" 
+			? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+			: theme;
 
-		if (theme === "system") {
-			const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-				.matches
-				? "dark"
-				: "light";
-
-			root.classList.add(systemTheme);
-			return;
+		// Check if the theme is already applied
+		if (!root.classList.contains(currentTheme)) {
+			root.classList.remove("light", "dark");
+			root.classList.add(currentTheme);
 		}
-
-		root.classList.add(theme);
 	}, [theme]);
 
 	const value = {

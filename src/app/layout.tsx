@@ -1,28 +1,14 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeScript } from "@/components/theme-script";
 
 /**
  * EdForge EMIS Typography System
  * 
- * Primary: Inter - Modern, highly legible, optimized for UI
- * Monospace: JetBrains Mono - Clean, professional code display
+ * Uses system fonts for better performance and EdForge design consistency.
+ * No external font dependencies for enterprise reliability.
  */
-
-const inter = Inter({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
-	display: "swap",
-	weight: ["300", "400", "500", "600", "700"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-	variable: "--font-geist-mono",
-	subsets: ["latin"],
-	display: "swap",
-	weight: ["400", "500", "600"],
-});
 
 export const metadata: Metadata = {
 	title: {
@@ -76,10 +62,11 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" suppressHydrationWarning>
-			<body
-				className={`${inter.variable} ${jetbrainsMono.variable} font-sans`}
-			>
+		<html lang="en" suppressHydrationWarning className="dark">
+			<head>
+				<ThemeScript />
+			</head>
+			<body className="font-sans antialiased bg-background text-foreground">
 				<ThemeProvider defaultTheme="system" storageKey="edforge-ui-theme">
 					{children}
 				</ThemeProvider>

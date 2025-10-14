@@ -3,6 +3,26 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================
+   FOUC Prevention - Default Dark Theme
+   ============================================ */
+html {
+	/* Set default dark background to prevent white flash */
+	background-color: oklch(0.17 0.01 255); /* Deep navy-black */
+	color: oklch(0.95 0.005 255); /* Off-white text */
+}
+
+/* Ensure smooth transition when theme is applied */
+html.dark {
+	background-color: oklch(0.17 0.01 255);
+	color: oklch(0.95 0.005 255);
+}
+
+html.light {
+	background-color: oklch(0.99 0 0);
+	color: oklch(0.25 0.015 255);
+}
+
 /* 
  * EdForge EMIS - Enterprise Grade Theme System
  * 
@@ -150,15 +170,15 @@
   --chart-4: oklch(0.70 0.18 75); /* Amber */
   --chart-5: oklch(0.60 0.15 285); /* Purple */
 
-  /* Sidebar Navigation - Primary Navy */
-  --sidebar: oklch(0.25 0.015 255); /* Navy background */
-  --sidebar-foreground: oklch(0.92 0.01 255); /* Light text */
-  --sidebar-primary: oklch(0.72 0.14 220); /* Cyan accent */
+  /* Sidebar Navigation - Light Theme */
+  --sidebar: oklch(0.96 0.002 255); /* Light gray background */
+  --sidebar-foreground: oklch(0.25 0.015 255); /* Dark text */
+  --sidebar-primary: oklch(0.42 0.08 255); /* Primary blue */
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.32 0.03 255); /* Slightly lighter navy */
-  --sidebar-accent-foreground: oklch(0.92 0.01 255);
-  --sidebar-border: oklch(0.35 0.03 255);
-  --sidebar-ring: oklch(0.72 0.14 220);
+  --sidebar-accent: oklch(0.90 0.003 255); /* Slightly darker accent */
+  --sidebar-accent-foreground: oklch(0.25 0.015 255);
+  --sidebar-border: oklch(0.85 0.003 255);
+  --sidebar-ring: oklch(0.42 0.08 255);
 }
 
 /* ============================================
