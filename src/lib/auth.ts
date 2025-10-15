@@ -61,9 +61,14 @@ export async function hasPermission(
 		// 3. Validate tenant access
 		// 4. Check time-based permissions
 		
-		// For now, return true for demo
-		// In production, implement proper RBAC logic
-		return true;
+		// For demo purposes, implement basic permission checks
+		switch (permission) {
+			case "VIEW_SETTINGS":
+				return user.role === "TENANT_ADMIN" || user.role === "PRINCIPAL";
+			default:
+				// For other permissions, return true for demo
+				return true;
+		}
 	} catch (error) {
 		console.error("Permission check error:", error);
 		return false;

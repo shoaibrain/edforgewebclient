@@ -214,16 +214,16 @@ export const DASHBOARD_NAVIGATION: NavItem[] = [
 	{
 		title: "Administration",
 		url: "/dashboard/admin",
-		icon: "Settings",
+		icon: "Shield",
 		permissions: [
-			Permission.MANAGE_INSTITUTION,
 			Permission.MANAGE_USERS,
 			Permission.MANAGE_ROLES,
+			Permission.MANAGE_INSTITUTION,
 		],
 		items: [
 			{
 				title: "Institution Settings",
-				url: "/dashboard/admin/institution",
+				url: "/dashboard/admin/settings",
 				permissions: [Permission.MANAGE_INSTITUTION],
 			},
 			{
