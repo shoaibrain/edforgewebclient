@@ -4,18 +4,26 @@ import { cookies } from "next/headers"
 /**
  * Token Service -  On-Demand Token Fetching
  * 
- * This service provides secure, on-demand access token fetching for server-side API calls.
- * Architecture:
- * - Stores only refreshToken in JWT cookie
- * - Fetches fresh accessToken on-demand using refreshToken
- * - Caches accessToken in memory per-request to avoid multiple refreshes
+ * This service provides secure, on-demand token fetching for server-side API calls.
+ * 
+ * Enterprise Architecture:
+ * - Stores only refreshToken in JWT cookie (~500 bytes, prevents chunking)
+ * - Fetches fresh tokens on-demand using refreshToken
+ * - Caches tokens in memory per-request to avoid multiple refreshes within same invocation
  * - Better security: tokens only in memory during API calls
+ * 
+ * Serverless vs Localhost Behavior:
+ * - Localhost: In-memory cache persists between requests (long-running Node.js process)
+ *   → Fewer Cognito API calls due to persistent cache
+ * - Vercel Serverless: Cache is empty on cold starts (fresh process per invocation)
+ *   → One refresh per cold start is expected and acceptable
+ *   → Within-request caching prevents multiple refreshes in same invocation
  * 
  * Usage:
  * ```typescript
- * import { getAccessTokenForApiCall } from "@/lib/token-service"
- * const accessToken = await getAccessTokenForApiCall()
- * if (!accessToken) {
+ * import { getIdTokenForApiCall } from "@/lib/token-service"
+ * const idToken = await getIdTokenForApiCall()
+ * if (!idToken) {
  *   throw new Error("Authentication required")
  * }
  * ```
@@ -170,10 +178,15 @@ async function getRefreshTokenFromJWT(): Promise<string | null> {
 /**
  * Fetch fresh accessToken and idToken from Cognito using refreshToken
  * 
- * ✅ Fix: Uses token endpoint from well-known OIDC configuration (correct Hosted UI domain)
+ * ✅ CRITICAL: Uses token endpoint from well-known OIDC configuration (correct Hosted UI domain)
  * instead of manually constructing cognito-idp endpoint which returns 400 BadRequest.
  * 
- * Note: Cognito refresh_token grant returns both access_token and id_token when scope includes "openid"
+ * ✅ CRITICAL: Includes scope parameter in refresh token grant to receive id_token.
+ * According to AWS Cognito OAuth2/OIDC specification, refresh_token grant MUST include
+ * scope parameter with "openid" to receive id_token in response.
+ * 
+ * @param refreshToken - The refresh token from NextAuth JWT cookie
+ * @returns Object with accessToken, idToken, and expiresIn, or null if refresh fails
  */
 async function fetchAccessTokenFromCognito(
   refreshToken: string
@@ -183,7 +196,7 @@ async function fetchAccessTokenFromCognito(
     const tokenEndpoint = await getTokenEndpointFromWellKnown()
 
     if (process.env.NODE_ENV === "development") {
-      console.log("[Token Service] Refreshing access token using endpoint:", tokenEndpoint)
+      console.log("[Token Service] Refreshing tokens using endpoint:", tokenEndpoint)
     }
 
     const response = await fetch(tokenEndpoint, {
@@ -195,15 +208,31 @@ async function fetchAccessTokenFromCognito(
         grant_type: "refresh_token",
         client_id: process.env.NEXT_PUBLIC_CLIENT_ID!,
         refresh_token: refreshToken,
+        scope: "openid profile email",
       }),
     })
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
+      const errorMessage = errorData.error_description || errorData.error || "Unknown error"
       console.error("[Token Service] Token refresh failed:", {
         status: response.status,
+        statusText: response.statusText,
         error: errorData,
+        endpoint: tokenEndpoint,
+        hasRefreshToken: !!refreshToken,
+        refreshTokenLength: refreshToken?.length,
       })
+      
+      // Enhanced error logging for production debugging
+      if (process.env.NODE_ENV === "production") {
+        console.error("[Token Service] Production error details:", {
+          timestamp: new Date().toISOString(),
+          errorCode: errorData.error,
+          errorDescription: errorMessage,
+        })
+      }
+      
       return null
     }
 
@@ -211,27 +240,62 @@ async function fetchAccessTokenFromCognito(
 
     // ✅ Cognito returns both access_token and id_token when scope includes "openid"
     if (!tokens.access_token) {
-      console.error("[Token Service] No access_token in refresh response")
+      console.error("[Token Service] No access_token in refresh response", {
+        responseKeys: Object.keys(tokens),
+        hasIdToken: !!tokens.id_token,
+      })
       return null
     }
 
     if (!tokens.id_token) {
-      console.warn("[Token Service] No id_token in refresh response (may be expected if scope doesn't include openid)")
+      console.error("[Token Service] CRITICAL: No id_token in refresh response", {
+        responseKeys: Object.keys(tokens),
+        hasAccessToken: !!tokens.access_token,
+        expiresIn: tokens.expires_in,
+        tokenType: tokens.token_type,
+      })
+      // This should not happen if scope parameter is correctly included
+      return null
+    }
+
+    if (process.env.NODE_ENV === "development") {
+      console.log("[Token Service] Successfully refreshed tokens", {
+        hasAccessToken: !!tokens.access_token,
+        hasIdToken: !!tokens.id_token,
+        expiresIn: tokens.expires_in,
+      })
     }
 
     return {
       accessToken: tokens.access_token,
-      idToken: tokens.id_token || "", // id_token may not always be present
+      idToken: tokens.id_token,
       expiresIn: tokens.expires_in || 3600,
     }
   } catch (error) {
-    console.error("[Token Service] Error fetching access token:", error)
+    console.error("[Token Service] Error fetching tokens from Cognito:", error)
+    if (error instanceof Error) {
+      console.error("[Token Service] Error details:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      })
+    }
     return null
   }
 }
 
-// Per-request cache for accessToken and idToken to avoid multiple refreshes
-// Using Map to avoid memory leaks (garbage collected with request)
+/**
+ * Per-request in-memory cache for accessToken and idToken
+ * 
+ * Cache Behavior:
+ * - Localhost: Cache persists between requests (long-running Node.js process)
+ *   → Reduces Cognito API calls for subsequent requests
+ * - Vercel Serverless: Cache is empty on cold starts (fresh process per invocation)
+ *   → Each cold start will refresh tokens (expected behavior)
+ *   → Within same request/function invocation, cache prevents multiple refreshes
+ * 
+ * Using Map to avoid memory leaks (garbage collected with request/function invocation)
+ */
 const tokenCache = new Map<string, { accessToken: string; idToken: string; expiresAt: number }>()
 
 /**
@@ -277,7 +341,12 @@ export async function getIdTokenForApiCall(): Promise<string | null> {
     const tokenData = await fetchAccessTokenFromCognito(refreshToken)
 
     if (!tokenData || !tokenData.idToken) {
-      console.error("[Token Service] No ID token in response")
+      console.error("[Token Service] No ID token in response", {
+        hasTokenData: !!tokenData,
+        hasIdToken: tokenData?.idToken ? true : false,
+        hasAccessToken: tokenData?.accessToken ? true : false,
+        refreshTokenLength: refreshToken?.length,
+      })
       return null
     }
 
@@ -292,6 +361,13 @@ export async function getIdTokenForApiCall(): Promise<string | null> {
     return tokenData.idToken
   } catch (error) {
     console.error("[Token Service] Failed to get ID token:", error)
+    if (error instanceof Error) {
+      console.error("[Token Service] Error details:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      })
+    }
     return null
   }
 }
