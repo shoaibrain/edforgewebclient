@@ -103,7 +103,9 @@ async function getRefreshTokenFromJWT(): Promise<string | null> {
     const allCookies = cookieStore.getAll()
 
     // Handle chunked cookies (just in case, though should not be needed with small cookies)
-    const chunkedPattern = /^next-auth\.session-token\.(\d+)$/
+    // On Vercel (HTTPS), NextAuth uses __Secure-next-auth.session-token
+    // On localhost (HTTP), NextAuth uses next-auth.session-token
+    const chunkedPattern = /^(?:__Secure-)?next-auth\.session-token\.(\d+)$/
     const chunkedCookies = allCookies.filter((c) => chunkedPattern.test(c.name))
     
     let sessionTokenValue: string | null = null
@@ -124,14 +126,27 @@ async function getRefreshTokenFromJWT(): Promise<string | null> {
       }
     } else {
       // No chunking - get single cookie
-      const sessionCookie = cookieStore.get("next-auth.session-token")
-      sessionTokenValue = sessionCookie?.value || null
+      // On Vercel (HTTPS), NextAuth uses __Secure-next-auth.session-token
+      // On localhost (HTTP), NextAuth uses next-auth.session-token
+      const secureCookie = cookieStore.get("__Secure-next-auth.session-token")
+      const regularCookie = cookieStore.get("next-auth.session-token")
+      sessionTokenValue = secureCookie?.value || regularCookie?.value || null
+      
+      if (process.env.NODE_ENV === "production" && !sessionTokenValue) {
+        console.error("[Token Service] No session cookie found in production", {
+          hasSecureCookie: !!secureCookie,
+          hasRegularCookie: !!regularCookie,
+          allCookieNames: allCookies.map(c => c.name),
+        })
+      }
     }
 
     if (!sessionTokenValue) {
-      if (process.env.NODE_ENV === "development") {
-        console.log("[Token Service] No session token cookie found")
-      }
+      console.error("[Token Service] No session token cookie found", {
+        environment: process.env.NODE_ENV,
+        cookieCount: allCookies.length,
+        cookieNames: allCookies.map(c => c.name),
+      })
       return null
     }
 
@@ -142,25 +157,30 @@ async function getRefreshTokenFromJWT(): Promise<string | null> {
     })
 
     if (!decoded) {
-      if (process.env.NODE_ENV === "development") {
-        console.log("[Token Service] Failed to decode JWT token")
-      }
+      console.error("[Token Service] Failed to decode JWT token", {
+        environment: process.env.NODE_ENV,
+        hasSessionToken: !!sessionTokenValue,
+        sessionTokenLength: sessionTokenValue?.length,
+      })
       return null
     }
 
     if (!decoded.refreshToken) {
-      if (process.env.NODE_ENV === "development") {
-        console.log("[Token Service] No refresh token in decoded JWT", {
-          hasDecoded: !!decoded,
-          decodedKeys: Object.keys(decoded),
-        })
-      }
+      console.error("[Token Service] No refresh token in decoded JWT", {
+        environment: process.env.NODE_ENV,
+        hasDecoded: !!decoded,
+        decodedKeys: Object.keys(decoded),
+        decodedSub: decoded.sub,
+        decodedTenantId: (decoded as any).tenantId,
+      })
       return null
     }
 
-    if (process.env.NODE_ENV === "development") {
-      console.log("[Token Service] Successfully retrieved refresh token from JWT")
-    }
+    console.log("[Token Service] Successfully retrieved refresh token from JWT", {
+      environment: process.env.NODE_ENV,
+      hasRefreshToken: !!decoded.refreshToken,
+      refreshTokenLength: (decoded.refreshToken as string)?.length,
+    })
 
     return decoded.refreshToken as string
   } catch (error) {
@@ -195,9 +215,12 @@ async function fetchAccessTokenFromCognito(
     // ✅ Get correct token endpoint from well-known configuration
     const tokenEndpoint = await getTokenEndpointFromWellKnown()
 
-    if (process.env.NODE_ENV === "development") {
-      console.log("[Token Service] Refreshing tokens using endpoint:", tokenEndpoint)
-    }
+    console.log("[Token Service] Refreshing tokens using endpoint:", {
+      environment: process.env.NODE_ENV,
+      endpoint: tokenEndpoint,
+      hasRefreshToken: !!refreshToken,
+      refreshTokenLength: refreshToken?.length,
+    })
 
     const response = await fetch(tokenEndpoint, {
       method: "POST",
@@ -318,37 +341,52 @@ export async function getIdTokenForApiCall(): Promise<string | null> {
     const refreshToken = await getRefreshTokenFromJWT()
 
     if (!refreshToken) {
-      if (process.env.NODE_ENV === "development") {
-        console.log("[Token Service] No refresh token available")
-      }
+      console.error("[Token Service] No refresh token available", {
+        environment: process.env.NODE_ENV,
+        hasNextAuthSecret: !!process.env.NEXTAUTH_SECRET,
+      })
       return null
     }
 
     // Step 2: Check cache (using refreshToken as key)
     const cached = tokenCache.get(refreshToken)
     if (cached && Date.now() < cached.expiresAt) {
-      if (process.env.NODE_ENV === "development") {
-        console.log("[Token Service] Using cached ID token")
-      }
+      console.log("[Token Service] Using cached ID token", {
+        environment: process.env.NODE_ENV,
+        cacheExpiresAt: new Date(cached.expiresAt).toISOString(),
+        timeUntilExpiry: cached.expiresAt - Date.now(),
+      })
       return cached.idToken
     }
 
     // Step 3: Fetch fresh accessToken and idToken
-    if (process.env.NODE_ENV === "development") {
-      console.log("[Token Service] Fetching fresh ID token from Cognito")
-    }
+    console.log("[Token Service] Fetching fresh ID token from Cognito", {
+      environment: process.env.NODE_ENV,
+      hasRefreshToken: !!refreshToken,
+      refreshTokenLength: refreshToken?.length,
+      cacheSize: tokenCache.size,
+    })
 
     const tokenData = await fetchAccessTokenFromCognito(refreshToken)
 
     if (!tokenData || !tokenData.idToken) {
       console.error("[Token Service] No ID token in response", {
+        environment: process.env.NODE_ENV,
         hasTokenData: !!tokenData,
         hasIdToken: tokenData?.idToken ? true : false,
         hasAccessToken: tokenData?.accessToken ? true : false,
         refreshTokenLength: refreshToken?.length,
+        tokenDataKeys: tokenData ? Object.keys(tokenData) : null,
       })
       return null
     }
+
+    console.log("[Token Service] Successfully obtained ID token", {
+      environment: process.env.NODE_ENV,
+      hasIdToken: !!tokenData.idToken,
+      idTokenLength: tokenData.idToken?.length,
+      expiresIn: tokenData.expiresIn,
+    })
 
     // Step 4: Cache and return idToken
     const expiresAt = Date.now() + (tokenData.expiresIn - 60) * 1000 // Cache with 60s buffer
