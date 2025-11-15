@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
+import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { getChartColors } from "@/lib/chart-colors"
 import { TrendingUp, BarChart3 } from "lucide-react"
@@ -11,6 +11,7 @@ interface PerformanceTrendsChartProps {
     period: string
     averageGPA: number
     averageScore?: number
+    studentToTeacherRatio?: number
     improvement?: number
   }>
 }
@@ -62,12 +63,18 @@ export function PerformanceTrendsChart({ data }: PerformanceTrendsChartProps) {
         >
           <p className="text-sm font-semibold text-foreground mb-2">{formatPeriod(label)}</p>
           <div className="space-y-1">
-            {payload.map((entry: any, index: number) => (
-              <p key={index} className="text-xs text-muted-foreground flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
-                {entry.name}: <span className="font-medium text-foreground">{entry.value.toFixed(2)}</span>
-              </p>
-            ))}
+            {payload.map((entry: any, index: number) => {
+              // Format student-to-teacher ratio as "15:1" format
+              const displayValue = entry.dataKey === 'studentToTeacherRatio' 
+                ? `${Math.round(entry.value)}:1` 
+                : entry.value.toFixed(2)
+              return (
+                <p key={index} className="text-xs text-muted-foreground flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
+                  {entry.name}: <span className="font-medium text-foreground">{displayValue}</span>
+                </p>
+              )
+            })}
           </div>
         </div>
       )
@@ -85,7 +92,7 @@ export function PerformanceTrendsChart({ data }: PerformanceTrendsChartProps) {
               Performance Trends
             </CardTitle>
             <CardDescription className="text-[10px] text-muted-foreground/70 mt-0.5 leading-relaxed">
-              Average GPA trends over the last 12 months. Tracks overall academic performance trajectory.
+              Average GPA, score, and student-to-teacher ratio trends over the last 12 months. Tracks overall academic performance trajectory.
               <span className="text-muted-foreground/60"> SABER:</span> Enables identification of systemic improvements or declines.
             </CardDescription>
           </div>
@@ -102,7 +109,7 @@ export function PerformanceTrendsChart({ data }: PerformanceTrendsChartProps) {
       </CardHeader>
       <CardContent className="pt-4">
         <ResponsiveContainer width="100%" height={260}>
-          <AreaChart data={data} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+          <ComposedChart data={data} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
             <defs>
               <linearGradient id="gpaGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={colors.chart3} stopOpacity={0.3} />
@@ -127,14 +134,25 @@ export function PerformanceTrendsChart({ data }: PerformanceTrendsChartProps) {
               height={60}
             />
             <YAxis
+              yAxisId="left"
               stroke={textColor}
               style={{ fontSize: "10px" }}
               tick={{ fill: textColor }}
-              domain={[0, 4]}
+              label={{ value: "GPA / Score", angle: -90, position: "insideLeft", style: { textAnchor: "middle", fontSize: "10px", fill: textColor } }}
+            />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              stroke={textColor}
+              style={{ fontSize: "10px" }}
+              tick={{ fill: textColor }}
+              domain={['dataMin - 1', 'dataMax + 1']}
+              label={{ value: "Ratio", angle: 90, position: "insideRight", style: { textAnchor: "middle", fontSize: "10px", fill: textColor } }}
             />
             <Tooltip cursor={{ fill: isDark ? '#374151' : '#F3F4F6' }} content={<CustomTooltip />} />
             <Legend wrapperStyle={{ paddingTop: "10px" }} iconType="circle" />
             <Area
+              yAxisId="left"
               type="monotone"
               dataKey="averageGPA"
               stroke={colors.chart3}
@@ -146,6 +164,7 @@ export function PerformanceTrendsChart({ data }: PerformanceTrendsChartProps) {
             />
             {data[0]?.averageScore !== undefined && (
               <Area
+                yAxisId="left"
                 type="monotone"
                 dataKey="averageScore"
                 stroke={colors.chart2}
@@ -156,7 +175,19 @@ export function PerformanceTrendsChart({ data }: PerformanceTrendsChartProps) {
                 activeDot={{ r: 5, fill: colors.chart2, stroke: bgColor, strokeWidth: 2 }}
               />
             )}
-          </AreaChart>
+            {data[0]?.studentToTeacherRatio !== undefined && (
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="studentToTeacherRatio"
+                stroke={colors.chart4}
+                name="Student-to-Teacher Ratio"
+                strokeWidth={2}
+                dot={{ r: 3, fill: colors.chart4, stroke: bgColor, strokeWidth: 1 }}
+                activeDot={{ r: 5, fill: colors.chart4, stroke: bgColor, strokeWidth: 2 }}
+              />
+            )}
+          </ComposedChart>
         </ResponsiveContainer>
         <div className="mt-2.5 px-1">
           <p className="text-[10px] text-muted-foreground/70 leading-relaxed">

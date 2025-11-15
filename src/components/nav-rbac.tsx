@@ -96,7 +96,7 @@ export function NavRBAC({ items, user, label = "Navigation" }: NavRBACProps) {
 							<Collapsible
 								key={item.title}
 								asChild
-								defaultOpen={false}
+								defaultOpen={true}
 								className="group/collapsible"
 								suppressHydrationWarning
 							>

@@ -132,6 +132,7 @@ const cognitoProvider = {
   authorization: {
     params: {
       scope: "openid profile email", // Basic scopes - custom scopes can be added if configured in Cognito
+      prompt: "login", // Force re-authentication - always show login form even if session exists
     },
   },
   idToken: true,

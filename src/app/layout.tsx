@@ -5,6 +5,8 @@ import { ThemeScript } from "@/components/theme-script";
 import { AuthSessionProvider } from "@/providers/session-provider";
 import { TenantProvider } from "@/contexts/tenant-context";
 import { UserProvider } from "@/contexts/user-context";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
 	title: {
@@ -73,6 +75,8 @@ export default function RootLayout({
 					</TenantProvider>
 				</ThemeProvider>
 			</AuthSessionProvider>
+			<Analytics />
+			<SpeedInsights />
 		</body>
 		</html>
 	);

@@ -11,14 +11,14 @@ export const DASHBOARD_NAVIGATION: NavItem[] = [
 	{
 		title: "Dashboard",
 		url: "/dashboard",
-		icon: "LayoutDashboard",
+		icon: "LayoutGrid",
 		isActive: true,
 		// No permissions = visible to everyone
 	},
 	{
 		title: "Students",
 		url: "/dashboard/students",
-		icon: "Users",
+		icon: "GraduationCap",
 		permissions: [Permission.VIEW_STUDENTS, Permission.MANAGE_STUDENTS],
 		items: [
 			{
@@ -36,7 +36,7 @@ export const DASHBOARD_NAVIGATION: NavItem[] = [
 	{
 		title: "People",
 		url: "/dashboard/people",
-		icon: "Users",
+		icon: "Briefcase",
 		// TODO: Add permissions for staff members
 		permissions: [Permission.VIEW_TEACHERS, Permission.MANAGE_TEACHERS],
 		items: [
@@ -55,7 +55,7 @@ export const DASHBOARD_NAVIGATION: NavItem[] = [
 	{
 		title: "Curriculum",
 		url: "/dashboard/school",
-		icon: "BookOpen",
+		icon: "BookMarked",
 		permissions: [Permission.MANAGE_CURRICULUM, Permission.MANAGE_COURSES],
 		items: [
 			{
@@ -83,7 +83,7 @@ export const DASHBOARD_NAVIGATION: NavItem[] = [
 	{
 		title: "Finance",
 		url: "/dashboard/finance",
-		icon: "DollarSign",
+		icon: "Wallet",
 		permissions: [Permission.MANAGE_CURRICULUM, Permission.MANAGE_COURSES],
 		items: [
 			{
@@ -106,7 +106,7 @@ export const DASHBOARD_NAVIGATION: NavItem[] = [
 	{
 		title: "Administration",
 		url: "/dashboard/admin",
-		icon: "Shield",
+		icon: "ShieldCheck",
 		permissions: [
 			Permission.MANAGE_USERS,
 			Permission.MANAGE_ROLES,
@@ -138,7 +138,7 @@ export const DASHBOARD_NAVIGATION: NavItem[] = [
 	{
 		title: "Auth Debug",
 		url: "/auth/info",
-		icon: "Shield",
+		icon: "Bug",
 	},
 ];
 

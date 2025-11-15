@@ -12,6 +12,7 @@ interface EnrollmentTrendsChartProps {
     total: number
     active: number
     graduated?: number
+    dropped?: number
     transferred?: number
   }>
 }
@@ -88,7 +89,7 @@ export function EnrollmentTrendsChart({ data }: EnrollmentTrendsChartProps) {
               Enrollment Trends
             </CardTitle>
             <CardDescription className="text-[10px] text-muted-foreground/70 mt-0.5 leading-relaxed">
-              Enrollment patterns over time showing total, active, and graduated students.
+              Enrollment patterns over time showing total, active, graduated, dropped, and transferred students.
               <span className="text-muted-foreground/60"> EMIS:</span> Critical for capacity planning and resource allocation.
             </CardDescription>
           </div>
@@ -116,6 +117,18 @@ export function EnrollmentTrendsChart({ data }: EnrollmentTrendsChartProps) {
                 <linearGradient id="graduatedGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor={colors.chart5} stopOpacity={0.3} />
                   <stop offset="95%" stopColor={colors.chart5} stopOpacity={0.05} />
+                </linearGradient>
+              )}
+              {data[0]?.dropped !== undefined && (
+                <linearGradient id="droppedGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={colors.chart1} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={colors.chart1} stopOpacity={0.05} />
+                </linearGradient>
+              )}
+              {data[0]?.transferred !== undefined && (
+                <linearGradient id="transferredGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={colors.chart4} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={colors.chart4} stopOpacity={0.05} />
                 </linearGradient>
               )}
             </defs>
@@ -167,6 +180,30 @@ export function EnrollmentTrendsChart({ data }: EnrollmentTrendsChartProps) {
                 strokeWidth={2}
                 dot={{ r: 3, fill: colors.chart5, stroke: bgColor, strokeWidth: 1 }}
                 activeDot={{ r: 5, fill: colors.chart5, stroke: bgColor, strokeWidth: 2 }}
+              />
+            )}
+            {data[0]?.dropped !== undefined && (
+              <Area
+                type="monotone"
+                dataKey="dropped"
+                stroke={colors.chart1}
+                fill="url(#droppedGradient)"
+                name="Dropped"
+                strokeWidth={2}
+                dot={{ r: 3, fill: colors.chart1, stroke: bgColor, strokeWidth: 1 }}
+                activeDot={{ r: 5, fill: colors.chart1, stroke: bgColor, strokeWidth: 2 }}
+              />
+            )}
+            {data[0]?.transferred !== undefined && (
+              <Area
+                type="monotone"
+                dataKey="transferred"
+                stroke={colors.chart4}
+                fill="url(#transferredGradient)"
+                name="Transferred"
+                strokeWidth={2}
+                dot={{ r: 3, fill: colors.chart4, stroke: bgColor, strokeWidth: 1 }}
+                activeDot={{ r: 5, fill: colors.chart4, stroke: bgColor, strokeWidth: 2 }}
               />
             )}
           </AreaChart>
