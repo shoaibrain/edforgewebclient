@@ -1,4 +1,3 @@
-import { ThemeToggle } from "@/components/theme-toggle";
 import {
 	CheckCircle2,
 	AlertCircle,
@@ -28,7 +27,6 @@ export default function Home() {
 								</p>
 							</div>
 						</div>
-						<ThemeToggle />
 					</div>
 				</div>
 			</header>

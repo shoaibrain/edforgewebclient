@@ -73,34 +73,34 @@ export default async function StudentsPage({ searchParams }: StudentsPageProps) 
 
 	// Performance trends (12 months)
 	const performanceTrends = [
-		{ period: "2023-09", averageGPA: 3.45, averageScore: 85.2 },
-		{ period: "2023-10", averageGPA: 3.48, averageScore: 85.8 },
-		{ period: "2023-11", averageGPA: 3.52, averageScore: 86.5 },
-		{ period: "2023-12", averageGPA: 3.55, averageScore: 87.1 },
-		{ period: "2024-01", averageGPA: 3.58, averageScore: 87.6 },
-		{ period: "2024-02", averageGPA: 3.61, averageScore: 88.2 },
-		{ period: "2024-03", averageGPA: 3.63, averageScore: 88.7 },
-		{ period: "2024-04", averageGPA: 3.65, averageScore: 89.1 },
-		{ period: "2024-05", averageGPA: 3.67, averageScore: 89.5 },
-		{ period: "2024-06", averageGPA: 3.68, averageScore: 89.8 },
-		{ period: "2024-07", averageGPA: 3.69, averageScore: 90.0 },
-		{ period: "2024-08", averageGPA: 3.70, averageScore: 90.2 },
+		{ period: "2023-09", averageGPA: 3.45, averageScore: 85.2, studentToTeacherRatio: 15.2 },
+		{ period: "2023-10", averageGPA: 3.48, averageScore: 85.8, studentToTeacherRatio: 15.4 },
+		{ period: "2023-11", averageGPA: 3.52, averageScore: 86.5, studentToTeacherRatio: 15.6 },
+		{ period: "2023-12", averageGPA: 3.55, averageScore: 87.1, studentToTeacherRatio: 15.8 },
+		{ period: "2024-01", averageGPA: 3.58, averageScore: 87.6, studentToTeacherRatio: 16.0 },
+		{ period: "2024-02", averageGPA: 3.61, averageScore: 88.2, studentToTeacherRatio: 16.2 },
+		{ period: "2024-03", averageGPA: 3.63, averageScore: 88.7, studentToTeacherRatio: 16.4 },
+		{ period: "2024-04", averageGPA: 3.65, averageScore: 89.1, studentToTeacherRatio: 16.5 },
+		{ period: "2024-05", averageGPA: 3.67, averageScore: 89.5, studentToTeacherRatio: 16.6 },
+		{ period: "2024-06", averageGPA: 3.68, averageScore: 89.8, studentToTeacherRatio: 16.7 },
+		{ period: "2024-07", averageGPA: 3.69, averageScore: 90.0, studentToTeacherRatio: 16.8 },
+		{ period: "2024-08", averageGPA: 3.70, averageScore: 90.2, studentToTeacherRatio: 16.9 },
 	];
 
 	// Enrollment trends
 	const enrollmentTrends = [
-		{ period: "2023-09", total: 142, active: 140, graduated: 2 },
-		{ period: "2023-10", total: 145, active: 142, graduated: 2 },
-		{ period: "2023-11", total: 147, active: 144, graduated: 2 },
-		{ period: "2023-12", total: 148, active: 145, graduated: 3 },
-		{ period: "2024-01", total: 150, active: 147, graduated: 3 },
-		{ period: "2024-02", total: 152, active: 149, graduated: 3 },
-		{ period: "2024-03", total: 154, active: 151, graduated: 3 },
-		{ period: "2024-04", total: 156, active: 153, graduated: 3 },
-		{ period: "2024-05", total: 158, active: 155, graduated: 3 },
-		{ period: "2024-06", total: 160, active: 157, graduated: 3 },
-		{ period: "2024-07", total: 162, active: 159, graduated: 3 },
-		{ period: "2024-08", total: 165, active: 162, graduated: 3 },
+		{ period: "2023-09", total: 142, active: 140, graduated: 2, dropped: 0, transferred: 0 },
+		{ period: "2023-10", total: 145, active: 142, graduated: 2, dropped: 0, transferred: 1 },
+		{ period: "2023-11", total: 147, active: 144, graduated: 2, dropped: 0, transferred: 1 },
+		{ period: "2023-12", total: 148, active: 145, graduated: 3, dropped: 0, transferred: 0 },
+		{ period: "2024-01", total: 150, active: 147, graduated: 3, dropped: 0, transferred: 0 },
+		{ period: "2024-02", total: 152, active: 149, graduated: 3, dropped: 0, transferred: 0 },
+		{ period: "2024-03", total: 154, active: 151, graduated: 3, dropped: 1, transferred: 0 },
+		{ period: "2024-04", total: 156, active: 153, graduated: 3, dropped: 0, transferred: 0 },
+		{ period: "2024-05", total: 158, active: 155, graduated: 3, dropped: 0, transferred: 0 },
+		{ period: "2024-06", total: 160, active: 157, graduated: 3, dropped: 0, transferred: 0 },
+		{ period: "2024-07", total: 162, active: 159, graduated: 3, dropped: 0, transferred: 0 },
+		{ period: "2024-08", total: 165, active: 162, graduated: 3, dropped: 0, transferred: 0 },
 	];
 
 	// Status breakdown

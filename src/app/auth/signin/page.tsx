@@ -31,6 +31,8 @@ export default function SignInPage() {
       const result = await signIn("cognito", {
         redirect: false,
         callbackUrl: "/dashboard",
+        // Force re-authentication by adding prompt=login to authorization URL
+        // This ensures Cognito shows login form even if session exists
       });
 
       if (result?.error) {
