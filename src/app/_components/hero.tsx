@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, FileText } from "lucide-react"
+import { ArrowRight, FileText, LogIn } from "lucide-react"
 
 export default function Hero() {
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -107,7 +108,7 @@ export default function Hero() {
                     ctx.fill()
 
                     // Core particle
-                    ctx.fillStyle = "#e76f51"
+                    ctx.fillStyle = "#ffffffff"
                     ctx.beginPath()
                     ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
                     ctx.fill()
@@ -203,13 +204,16 @@ export default function Hero() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-[fadeIn_1.4s_ease-out]">
-                    <Button
-                        size="lg"
-                        className="rounded-full bg-[#e76f51] text-white hover:bg-[#db441e] px-8 h-12 text-base group shadow-lg shadow-[#e76f51]/20"
-                    >
-                        Deploy EdForge
-                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
+                    <Link href="/auth/signin">
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            className="rounded-full border-[#e76f51] text-[#e76f51] hover:bg-[#e76f51]/10 px-8 h-12 text-base group bg-transparent shadow-lg shadow-[#e76f51]/10"
+                        >
+                            <LogIn className="mr-2 w-4 h-4" />
+                            Login
+                        </Button>
+                    </Link>
                     <Button
                         size="lg"
                         variant="outline"

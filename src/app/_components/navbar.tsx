@@ -277,7 +277,7 @@ export default function Navbar() {
                     <div className="relative w-10 h-10 flex items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-105 overflow-hidden">
                         <img src="/logo-white.svg" alt="EdForge Logo" className="w-full h-full object-cover" />
                     </div>
-                    <span className="text-xl font-bold text-white tracking-tight">EdForge</span>
+                    <span className="text-xl font-bold bg-gradient-to-r from-white via-white to-[#95bece] bg-clip-text text-transparent tracking-tight">EdForge</span>
                 </Link>
 
                 {/* 2. Desktop Navigation */}
@@ -339,7 +339,7 @@ export default function Navbar() {
                         }}
                     >
                         <div
-                            className={`relative bg-[#0f172a]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-out origin-top ${showDropdown
+                            className={`relative bg-[#0f172a]/20 backdrop-blur-sm border border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-out origin-top ${showDropdown
                                 ? "opacity-100 translate-y-0 scale-100 visible"
                                 : "opacity-0 -translate-y-4 scale-95 invisible"
                                 }`}
@@ -368,7 +368,7 @@ export default function Navbar() {
                                                         <Link
                                                             key={idx}
                                                             href={subItem.href}
-                                                            className="group flex flex-col p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all duration-200"
+                                                            className="group flex flex-col p-4 rounded-xl bg-[#0f172a] hover:bg-[#1e293b] border border-white/10 transition-all duration-200"
                                                         >
                                                             <div className="flex items-center gap-3 mb-3">
                                                                 <div className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-all">
@@ -447,12 +447,6 @@ export default function Navbar() {
 
                 {/* 3. Right Section */}
                 <div className="flex items-center gap-4">
-                    <div className="hidden md:block">
-                        <Button className="rounded-full bg-white text-black hover:bg-slate-200 px-6 font-medium shadow-lg shadow-white/10 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5">
-                            Get Started
-                        </Button>
-                    </div>
-
                     {/* Mobile Toggle */}
                     <button
                         className="md:hidden p-2 text-white hover:bg-white/10 rounded-full transition-colors"
