@@ -8,7 +8,12 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ token, req }) => {
+        if (req.nextUrl.pathname === "/") {
+          return true
+        }
+        return !!token
+      },
     },
     pages: {
       signIn: "/auth/signin",
@@ -27,6 +32,6 @@ export const config = {
      * - public files (images, etc)
      * - auth pages
      */
-    "/((?!api/auth|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|auth).*)",
+    "/((?!api/auth|_next/static|_next/image|icon.svg|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|auth).*)",
   ],
 }
