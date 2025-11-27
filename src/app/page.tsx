@@ -1,20 +1,19 @@
-import StakeholderOpportunities from "./_components/stakeholder-opportunities";
+
 import Navbar from "./_components/navbar";
 import Hero from "./_components/hero";
-import FloatingDock from "./_components/floating-dock";
-import InteractiveArchitecture from "./_components/interactive-architecture";
-import OpportunitiesShowcase from "./_components/opportunities-showcase";
 import Footer from "./_components/footer";
+import AdminScrollytelling from "./_components/admin-scrollytelling";
+import TeacherParentScrollytelling from "./_components/teacher-parent-scrollytelling";
+import StudentScrollytelling from "./_components/student-scrollytelling";
 
 export default function Home() {
 	return (
-		<main className="relative w-full overflow-x-hidden">
+		<main className="relative w-full">
 			<Navbar />
 			<Hero />
-			{/* <FloatingDock />
-			<InteractiveArchitecture />
-			<OpportunitiesShowcase />
-			<StakeholderOpportunities /> */}
+			<AdminScrollytelling />
+			<TeacherParentScrollytelling />
+			<StudentScrollytelling />
 			<Footer />
 		</main>
 	);

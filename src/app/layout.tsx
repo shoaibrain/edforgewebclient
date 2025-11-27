@@ -65,19 +65,19 @@ export default function RootLayout({
 			<head>
 				<ThemeScript />
 			</head>
-		<body className="font-sans antialiased bg-background text-foreground">
-			<AuthSessionProvider>
-				<ThemeProvider defaultTheme="system" storageKey="edforge-ui-theme">
-					<TenantProvider>
-						<UserProvider>
-							{children}
-						</UserProvider>
-					</TenantProvider>
-				</ThemeProvider>
-			</AuthSessionProvider>
-			<Analytics />
-			<SpeedInsights />
-		</body>
+			<body className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
+				<AuthSessionProvider>
+					<ThemeProvider defaultTheme="system" storageKey="edforge-ui-theme">
+						<TenantProvider>
+							<UserProvider>
+								{children}
+							</UserProvider>
+						</TenantProvider>
+					</ThemeProvider>
+				</AuthSessionProvider>
+				<Analytics />
+				<SpeedInsights />
+			</body>
 		</html>
 	);
 }

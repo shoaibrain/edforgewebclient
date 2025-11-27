@@ -7,20 +7,22 @@
    FOUC Prevention - Default Dark Theme
    ============================================ */
 html {
-	/* Set default dark background to prevent white flash */
-	background-color: oklch(0.17 0.01 255); /* Deep navy-black */
-	color: oklch(0.95 0.005 255); /* Off-white text */
+  /* Set default dark background to prevent white flash */
+  background-color: oklch(0.17 0.01 255);
+  /* Deep navy-black */
+  color: oklch(0.95 0.005 255);
+  /* Off-white text */
 }
 
 /* Ensure smooth transition when theme is applied */
 html.dark {
-	background-color: oklch(0.17 0.01 255);
-	color: oklch(0.95 0.005 255);
+  background-color: oklch(0.17 0.01 255);
+  color: oklch(0.95 0.005 255);
 }
 
 html.light {
-	background-color: oklch(0.99 0 0);
-	color: oklch(0.25 0.015 255);
+  background-color: oklch(0.99 0 0);
+  color: oklch(0.25 0.015 255);
 }
 
 /* 
@@ -114,71 +116,78 @@ html.light {
   /* Border Radius */
   --radius: 0.5rem;
 
-  /* Background & Foreground - 60% (Neutrals) */
-  --background: oklch(0.99 0 0); /* Off-white #FCFCFC */
-  --foreground: oklch(0.25 0.015 255); /* Navy text #102E4A */
+  /* Background & Foreground */
+  --background: oklch(0.98 0.01 200);
+  /* Very light teal tint */
+  --foreground: oklch(0.20 0.03 200);
+  /* Dark teal-gray */
 
-  /* Card Surfaces - Clean white with subtle elevation */
-  --card: oklch(1 0 0); /* Pure white */
-  --card-foreground: oklch(0.25 0.015 255);
+  /* Card Surfaces */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.20 0.03 200);
 
   /* Popover Surfaces */
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.25 0.015 255);
+  --popover-foreground: oklch(0.20 0.03 200);
 
-  /* Primary - 30% (Deep Navy Blue) - Trust & Stability */
-  --primary: oklch(0.42 0.08 255); /* Royal Blue #005B99 */
-  --primary-foreground: oklch(0.99 0 0); /* White text */
+  /* Primary - Charcoal Blue #264653 */
+  --primary: oklch(0.35 0.06 230);
+  --primary-foreground: oklch(0.98 0 0);
 
-  /* Secondary - 10% (Deep Teal) - Growth & Balance */
-  --secondary: oklch(0.52 0.09 195); /* Deep Teal #008080 */
-  --secondary-foreground: oklch(0.99 0 0);
+  /* Secondary - Verdigris #2a9d8f */
+  --secondary: oklch(0.60 0.14 175);
+  --secondary-foreground: oklch(0.98 0 0);
 
-  /* Muted - Subtle backgrounds */
-  --muted: oklch(0.96 0.002 255); /* Light Gray #F5F5F6 */
-  --muted-foreground: oklch(0.50 0.02 255); /* Medium gray text */
+  /* Muted */
+  --muted: oklch(0.96 0.01 200);
+  --muted-foreground: oklch(0.55 0.04 200);
 
-  /* Accent - Bright Action Color (Cyan) */
-  --accent: oklch(0.72 0.14 220); /* Bright Cyan #00B8FF */
-  --accent-foreground: oklch(0.99 0 0);
+  /* Accent - Burnt Peach #e76f51 */
+  --accent: oklch(0.65 0.18 35);
+  --accent-foreground: oklch(0.98 0 0);
 
-  /* Semantic Colors - WCAG AA Compliant */
-  --success: oklch(0.58 0.15 155); /* Success Green #0F9D58 */
-  --success-foreground: oklch(0.99 0 0);
-
-  --warning: oklch(0.70 0.16 75); /* Warning Amber #F59E0B */
-  --warning-foreground: oklch(0.20 0.01 75);
-
-  --error: oklch(0.55 0.22 25); /* Error Red #DC2626 */
-  --error-foreground: oklch(0.99 0 0);
-
-  --info: oklch(0.60 0.15 250); /* Info Blue #2563EB */
-  --info-foreground: oklch(0.99 0 0);
-
-  --destructive: oklch(0.55 0.22 25); /* Destructive Red */
-  --destructive-foreground: oklch(0.99 0 0);
+  /* Semantic Colors */
+  --success: oklch(0.60 0.14 175);
+  /* Using Verdigris for success */
+  --success-foreground: oklch(0.98 0 0);
+  --warning: oklch(0.85 0.16 85);
+  /* Jasmine/Sandy Brown mix */
+  --warning-foreground: oklch(0.20 0.03 200);
+  --error: oklch(0.65 0.18 35);
+  /* Using Accent for error */
+  --error-foreground: oklch(0.98 0 0);
+  --info: oklch(0.35 0.06 230);
+  /* Using Primary for info */
+  --info-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.65 0.18 35);
+  --destructive-foreground: oklch(0.98 0 0);
 
   /* Borders & Inputs */
-  --border: oklch(0.90 0.003 255); /* Light border #E5E5E8 */
-  --input: oklch(0.90 0.003 255);
-  --ring: oklch(0.42 0.08 255); /* Primary blue for focus rings */
+  --border: oklch(0.90 0.02 200);
+  --input: oklch(0.90 0.02 200);
+  --ring: oklch(0.35 0.06 230);
 
-  /* Chart Colors - Data Visualization for Educational Metrics */
-  --chart-1: oklch(0.60 0.20 25); /* Warm Red */
-  --chart-2: oklch(0.65 0.18 155); /* Green */
-  --chart-3: oklch(0.65 0.20 255); /* Blue */
-  --chart-4: oklch(0.70 0.18 75); /* Amber */
-  --chart-5: oklch(0.60 0.15 285); /* Purple */
+  /* Chart Colors */
+  --chart-1: oklch(0.65 0.18 35);
+  /* Burnt Peach */
+  --chart-2: oklch(0.60 0.14 175);
+  /* Verdigris */
+  --chart-3: oklch(0.85 0.16 85);
+  /* Jasmine */
+  --chart-4: oklch(0.75 0.15 55);
+  /* Sandy Brown */
+  --chart-5: oklch(0.35 0.06 230);
+  /* Charcoal Blue */
 
-  /* Sidebar Navigation - Light Theme */
-  --sidebar: oklch(0.96 0.002 255); /* Light gray background */
-  --sidebar-foreground: oklch(0.25 0.015 255); /* Dark text */
-  --sidebar-primary: oklch(0.42 0.08 255); /* Primary blue */
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.90 0.003 255); /* Slightly darker accent */
-  --sidebar-accent-foreground: oklch(0.25 0.015 255);
-  --sidebar-border: oklch(0.85 0.003 255);
-  --sidebar-ring: oklch(0.42 0.08 255);
+  /* Sidebar Navigation */
+  --sidebar: oklch(0.98 0.01 200);
+  --sidebar-foreground: oklch(0.20 0.03 200);
+  --sidebar-primary: oklch(0.35 0.06 230);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.94 0.02 200);
+  --sidebar-accent-foreground: oklch(0.20 0.03 200);
+  --sidebar-border: oklch(0.90 0.02 200);
+  --sidebar-ring: oklch(0.35 0.06 230);
 }
 
 /* ============================================
@@ -186,70 +195,73 @@ html.light {
    ============================================ */
 .dark {
   /* Background & Foreground */
-  --background: oklch(0.17 0.01 255); /* Deep navy-black #0A1628 */
-  --foreground: oklch(0.95 0.005 255); /* Off-white text */
+  --background: oklch(0.18 0.04 230);
+  /* Darker Charcoal Blue */
+  --foreground: oklch(0.95 0.01 200);
 
-  /* Card Surfaces - Elevated dark cards */
-  --card: oklch(0.22 0.015 255); /* Slightly lighter than bg */
-  --card-foreground: oklch(0.95 0.005 255);
+  /* Card Surfaces */
+  --card: oklch(0.22 0.04 230);
+  --card-foreground: oklch(0.95 0.01 200);
 
   /* Popover Surfaces */
-  --popover: oklch(0.22 0.015 255);
-  --popover-foreground: oklch(0.95 0.005 255);
+  --popover: oklch(0.22 0.04 230);
+  --popover-foreground: oklch(0.95 0.01 200);
 
-  /* Primary - Lighter blue for dark mode */
-  --primary: oklch(0.68 0.15 240); /* Bright Blue #3B82F6 */
-  --primary-foreground: oklch(0.99 0 0);
+  /* Primary - Charcoal Blue (Lighter for dark mode) */
+  --primary: oklch(0.45 0.06 230);
+  --primary-foreground: oklch(0.98 0 0);
 
-  /* Secondary - Teal for dark mode */
-  --secondary: oklch(0.60 0.12 195); /* Bright Teal */
-  --secondary-foreground: oklch(0.99 0 0);
+  /* Secondary - Verdigris */
+  --secondary: oklch(0.60 0.14 175);
+  --secondary-foreground: oklch(0.98 0 0);
 
-  /* Muted - Subtle dark backgrounds */
-  --muted: oklch(0.27 0.02 255); /* Subtle gray */
-  --muted-foreground: oklch(0.65 0.02 255);
+  /* Muted */
+  --muted: oklch(0.25 0.04 230);
+  --muted-foreground: oklch(0.70 0.04 200);
 
-  /* Accent - Cyan (slightly desaturated) */
-  --accent: oklch(0.68 0.12 220); /* Desaturated cyan for dark */
-  --accent-foreground: oklch(0.99 0 0);
+  /* Accent - Burnt Peach */
+  --accent: oklch(0.65 0.18 35);
+  --accent-foreground: oklch(0.98 0 0);
 
-  /* Semantic Colors - Dark mode optimized */
-  --success: oklch(0.65 0.14 155); /* Success Green */
-  --success-foreground: oklch(0.99 0 0);
-
-  --warning: oklch(0.75 0.14 75); /* Warning Amber */
-  --warning-foreground: oklch(0.20 0.01 75);
-
-  --error: oklch(0.62 0.20 25); /* Error Red (lighter) */
-  --error-foreground: oklch(0.99 0 0);
-
-  --info: oklch(0.65 0.13 250); /* Info Blue */
-  --info-foreground: oklch(0.99 0 0);
-
-  --destructive: oklch(0.62 0.20 25);
-  --destructive-foreground: oklch(0.99 0 0);
+  /* Semantic Colors */
+  --success: oklch(0.60 0.14 175);
+  --success-foreground: oklch(0.98 0 0);
+  --warning: oklch(0.85 0.16 85);
+  --warning-foreground: oklch(0.20 0.03 200);
+  --error: oklch(0.65 0.18 35);
+  --error-foreground: oklch(0.98 0 0);
+  --info: oklch(0.45 0.06 230);
+  --info-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.65 0.18 35);
+  --destructive-foreground: oklch(0.98 0 0);
 
   /* Borders & Inputs */
-  --border: oklch(0.35 0.02 255); /* Subtle border */
-  --input: oklch(0.30 0.02 255);
-  --ring: oklch(0.68 0.15 240); /* Primary blue for focus */
+  --border: oklch(0.30 0.04 230);
+  --input: oklch(0.30 0.04 230);
+  --ring: oklch(0.45 0.06 230);
 
-  /* Chart Colors - Dark mode data visualization */
-  --chart-1: oklch(0.65 0.18 25); /* Warm Red */
-  --chart-2: oklch(0.70 0.16 155); /* Green */
-  --chart-3: oklch(0.70 0.18 255); /* Blue */
-  --chart-4: oklch(0.75 0.16 75); /* Amber */
-  --chart-5: oklch(0.65 0.13 285); /* Purple */
+  /* Chart Colors */
+  --chart-1: oklch(0.65 0.18 35);
+  /* Burnt Peach */
+  --chart-2: oklch(0.60 0.14 175);
+  /* Verdigris */
+  --chart-3: oklch(0.85 0.16 85);
+  /* Jasmine */
+  --chart-4: oklch(0.75 0.15 55);
+  /* Sandy Brown */
+  --chart-5: oklch(0.45 0.06 230);
+  /* Charcoal Blue (Lighter) */
 
   /* Sidebar Navigation */
-  --sidebar: oklch(0.20 0.015 255); /* Slightly lighter than bg */
-  --sidebar-foreground: oklch(0.90 0.01 255);
-  --sidebar-primary: oklch(0.68 0.12 220); /* Cyan accent */
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.27 0.02 255);
-  --sidebar-accent-foreground: oklch(0.90 0.01 255);
-  --sidebar-border: oklch(0.30 0.02 255);
-  --sidebar-ring: oklch(0.68 0.12 220);
+  --sidebar: oklch(0.15 0.04 230);
+  /* Darker than bg */
+  --sidebar-foreground: oklch(0.90 0.01 200);
+  --sidebar-primary: oklch(0.45 0.06 230);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.25 0.04 230);
+  --sidebar-accent-foreground: oklch(0.90 0.01 200);
+  --sidebar-border: oklch(0.25 0.04 230);
+  --sidebar-ring: oklch(0.45 0.06 230);
 }
 
 /* ============================================
@@ -260,9 +272,54 @@ html.light {
     @apply border-border outline-ring/50;
   }
 
+  :root {
+    /* Grid Pattern - Subtle and premium */
+    --pattern-grid: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.04)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+
+    /* Noise Texture - Adds grain and realism */
+    --pattern-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased relative min-h-screen overflow-x-hidden;
     font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+  }
+
+  /* Mesh Gradient Background */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: -2;
+    background:
+      radial-gradient(circle at 15% 50%, oklch(0.35 0.06 230 / 0.8), transparent 25%),
+      radial-gradient(circle at 85% 30%, oklch(0.65 0.18 35 / 0.15), transparent 25%),
+      radial-gradient(circle at 50% 80%, oklch(0.60 0.14 175 / 0.15), transparent 40%);
+    filter: blur(60px);
+  }
+
+  /* Grid & Noise Overlay */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: -1;
+    background-image: var(--pattern-grid), var(--pattern-noise);
+    mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+  }
+
+  /* Utility to ensure transparency on components */
+  .bg-transparent-gradient {
+    background: transparent;
   }
 
   /* Smooth transitions for theme switching */
@@ -273,7 +330,12 @@ html.light {
   }
 
   /* Typography hierarchy for enterprise EMIS */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-sans font-semibold tracking-tight;
   }
 
@@ -298,25 +360,29 @@ html.light {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.65 0.02 255); /* Subtle gray */
+    background: oklch(0.65 0.02 255);
+    /* Subtle gray */
     border-radius: 4px;
     border: 2px solid transparent;
     background-clip: content-box;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.55 0.02 255); /* Darker on hover */
+    background: oklch(0.55 0.02 255);
+    /* Darker on hover */
     background-clip: content-box;
   }
 
   /* Dark mode scrollbar */
   .dark ::-webkit-scrollbar-thumb {
-    background: oklch(0.45 0.02 255); /* Darker for dark mode */
+    background: oklch(0.45 0.02 255);
+    /* Darker for dark mode */
     background-clip: content-box;
   }
 
   .dark ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.55 0.02 255); /* Lighter on hover in dark mode */
+    background: oklch(0.55 0.02 255);
+    /* Lighter on hover in dark mode */
     background-clip: content-box;
   }
 
@@ -326,7 +392,8 @@ html.light {
   }
 
   .sidebar-scroll::-webkit-scrollbar-thumb {
-    background: oklch(0.35 0.02 255); /* Even more subtle for sidebar */
+    background: oklch(0.35 0.02 255);
+    /* Even more subtle for sidebar */
     border-radius: 3px;
     border: 1px solid transparent;
     background-clip: content-box;
@@ -354,9 +421,12 @@ html.light {
 
   /* Loading skeleton animations */
   @keyframes skeleton-pulse {
-    0%, 100% {
+
+    0%,
+    100% {
       opacity: 1;
     }
+
     50% {
       opacity: 0.5;
     }
@@ -371,6 +441,7 @@ html.light {
     transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
+
 /* 
  ---break---
  */
@@ -378,7 +449,26 @@ html.light {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* <CHANGE> Added custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: oklch(0.08 0.01 264);
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.3 0.05 264);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.4 0.08 264);
 }
