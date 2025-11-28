@@ -1,10 +1,21 @@
 "use client"
 
 import { BookOpen, Trophy, Star, Target, Zap, Award, TrendingUp, Clock } from "lucide-react"
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis } from "recharts"
 
 interface StudentDashboardProps {
     activeState: "learning" | "engagement" | "achievements" | "personalized"
 }
+
+const data = [
+    { name: "Mon", value: 40 },
+    { name: "Tue", value: 60 },
+    { name: "Wed", value: 45 },
+    { name: "Thu", value: 80 },
+    { name: "Fri", value: 70 },
+    { name: "Sat", value: 90 },
+    { name: "Sun", value: 85 },
+]
 
 export function StudentDashboard({ activeState }: StudentDashboardProps) {
     return (
@@ -300,6 +311,41 @@ export function StudentDashboard({ activeState }: StudentDashboardProps) {
                                         <div className="text-sm font-medium text-foreground">Today's Focus Areas</div>
                                     </div>
                                     <div className="space-y-3">
+                                        <div className="h-[200px] w-full">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <LineChart data={data}>
+                                                    <defs>
+                                                        <linearGradient id="learningGradient" x1="0" y1="0" x2="1" y2="0">
+                                                            <stop offset="0%" stopColor="#8b5cf6" />
+                                                            <stop offset="100%" stopColor="#ec4899" />
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <XAxis
+                                                        dataKey="name"
+                                                        stroke="hsl(var(--muted-foreground))"
+                                                        fontSize={12}
+                                                        tickLine={false}
+                                                        axisLine={false}
+                                                    />
+                                                    <Tooltip
+                                                        contentStyle={{
+                                                            backgroundColor: "hsl(var(--background))",
+                                                            borderColor: "hsl(var(--border))",
+                                                            borderRadius: "8px",
+                                                        }}
+                                                        itemStyle={{ color: "hsl(var(--foreground))" }}
+                                                    />
+                                                    <Line
+                                                        type="monotone"
+                                                        dataKey="value"
+                                                        stroke="url(#learningGradient)"
+                                                        strokeWidth={3}
+                                                        dot={{ fill: "#ec4899", strokeWidth: 2 }}
+                                                        activeDot={{ r: 6, fill: "#8b5cf6" }}
+                                                    />
+                                                </LineChart>
+                                            </ResponsiveContainer>
+                                        </div>
                                         {[
                                             {
                                                 topic: "Practice algebra word problems",
@@ -357,6 +403,6 @@ export function StudentDashboard({ activeState }: StudentDashboardProps) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { AdminDashboard } from "./admin-dashboard"
+import { SkeletonCard } from "./skeleton-card"
 
 type DashboardState = "overview" | "multi-campus" | "hr" | "analytics"
 
@@ -17,30 +18,30 @@ const sections: ScrollSection[] = [
     {
         id: 1,
         state: "overview",
-        headline: "Enterprise-Grade District Management",
-        body: "Manage multiple schools, campuses, and departments from a single unified platform. Real-time visibility into every aspect of your educational ecosystem, from enrollment trends to resource allocation across your entire organization.",
-        badge: "Central Command",
+        headline: "Strategic Resource Allocation",
+        body: "Leverage open state and federal datasets to manage finances and identify skills needed for the future economy. Use labor statistics to guide curriculum planning and ensure students are prepared for high-growth job markets.",
+        badge: "Future Planning",
     },
     {
         id: 2,
         state: "multi-campus",
-        headline: "Multi-Campus Orchestration",
-        body: "Seamlessly coordinate operations across dozens or hundreds of locations. Monitor performance metrics, standardize best practices, and ensure consistency while preserving each campus's unique identity and culture.",
+        headline: "Unified District Operations",
+        body: "Seamlessly coordinate operations across dozens of locations. Monitor performance metrics, standardize best practices, and ensure consistency while preserving each campus's unique identity and culture.",
         badge: "Scale with Ease",
     },
     {
         id: 3,
         state: "hr",
-        headline: "Integrated HR & Personnel",
-        body: "Streamline workforce management with automated onboarding, certification tracking, performance reviews, and professional development. Keep your most valuable asset—your people—engaged, compliant, and thriving.",
-        badge: "People First",
+        headline: "Future-Ready Workforce",
+        body: "Empower counselors with tools to increase support reach. Implement 'jobs available at graduation' tools and college-to-career maps that help students plan for success in their future education and career paths.",
+        badge: "Career Pathways",
     },
     {
         id: 4,
         state: "analytics",
-        headline: "Strategic Decision Intelligence",
-        body: "Transform data into actionable insights with predictive analytics, custom reporting, and AI-powered recommendations. Make confident decisions backed by comprehensive data visualization and forecasting models.",
-        badge: "Data-Driven",
+        headline: "Data-Driven Decision Intelligence",
+        body: "Move beyond educated guesses. Utilize simulations, heat maps, and ranking tools to understand student learning deeply. Get just-in-time feedback to strategically adjust instruction and meet the needs of diverse learners.",
+        badge: "Smart Analytics",
     },
 ]
 
@@ -117,22 +118,19 @@ export default function AdminScrollytelling() {
                                 ref={(el) => {
                                     sectionRefs.current[index] = el
                                 }}
-                                className="min-h-[80vh] px-6 py-12 transition-all duration-700 ease-out lg:px-12"
+                                className="min-h-[80vh] px-6 py-12 transition-all duration-700 ease-out lg:px-12 flex items-center"
                                 style={{
                                     opacity: activeSection === index ? 1 : 0.3,
                                     filter: activeSection === index ? "blur(0px)" : "blur(1px)",
                                     transform: activeSection === index ? "scale(1)" : "scale(0.98)",
                                 }}
                             >
-                                <div className="max-w-lg">
-                                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                                        {section.badge}
-                                    </div>
-                                    <h3 className="mb-4 text-balance font-sans text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                                        {section.headline}
-                                    </h3>
-                                    <p className="text-pretty text-lg leading-relaxed text-muted-foreground">{section.body}</p>
-                                </div>
+                                <SkeletonCard
+                                    badge={section.badge}
+                                    title={section.headline}
+                                    description={section.body}
+                                    className="w-full max-w-lg"
+                                />
                             </div>
                         ))}
                     </div>

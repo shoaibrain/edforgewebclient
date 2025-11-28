@@ -173,14 +173,35 @@ export function TeacherParentDashboard({ activeState }: TeacherParentDashboardPr
                             <h3 className="mb-4 text-lg font-semibold text-foreground">Student Performance Insights</h3>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="rounded-2xl border border-border bg-card p-5 shadow-lg">
-                                    <h4 className="mb-4 text-sm font-semibold text-foreground">Class Average</h4>
-                                    <div className="mb-4 text-4xl font-bold text-accent">87.3%</div>
-                                    <div className="h-2 w-full overflow-hidden rounded-full bg-background/50">
-                                        <div className="h-full w-[87%] rounded-full bg-gradient-to-r from-accent to-primary"></div>
-                                    </div>
-                                    <div className="mt-3 flex justify-between text-xs text-muted-foreground">
-                                        <span>Above target by 3.8%</span>
-                                        <span className="text-green-500">↑ +2.1%</span>
+                                    <h4 className="mb-4 text-sm font-semibold text-foreground">Subject Mastery</h4>
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-muted-foreground">Mathematics Mastery</span>
+                                                <span className="font-medium text-[#e76f51]">92%</span>
+                                            </div>
+                                            <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
+                                                <div className="h-full w-[92%] rounded-full bg-[#e76f51]" />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-muted-foreground">Science Proficiency</span>
+                                                <span className="font-medium text-[#2a9d8f]">88%</span>
+                                            </div>
+                                            <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
+                                                <div className="h-full w-[88%] rounded-full bg-[#2a9d8f]" />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-muted-foreground">Language Arts</span>
+                                                <span className="font-medium text-[#e9c46a]">75%</span>
+                                            </div>
+                                            <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
+                                                <div className="h-full w-[75%] rounded-full bg-[#e9c46a]" />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="rounded-2xl border border-border bg-card p-5 shadow-lg">

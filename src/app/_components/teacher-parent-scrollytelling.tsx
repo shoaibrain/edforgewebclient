@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { TeacherParentDashboard } from "./teacher-parent-dashboard"
+import { SkeletonCard } from "./skeleton-card"
 
 type DashboardState = "classroom" | "communication" | "progress" | "collaboration"
 
@@ -17,29 +18,29 @@ const sections: ScrollSection[] = [
     {
         id: 1,
         state: "classroom",
-        headline: "Intelligent Classroom Management",
-        body: "Effortlessly organize lessons, assignments, and assessments with AI-powered tools. Spend less time on administrative tasks and more time inspiring students with personalized learning experiences tailored to each child's needs.",
-        badge: "For Teachers",
+        headline: "Actionable Formative Assessment",
+        body: "Get quick and continual snapshots of student progress. Embedded assessments provide just-in-time feedback, allowing you to personalize learning pathways and strategically adjust instruction to meet every student's needs.",
+        badge: "Real-Time Insight",
     },
     {
         id: 2,
         state: "communication",
-        headline: "Seamless Parent-Teacher Connection",
-        body: "Bridge the home-school gap with real-time updates, instant messaging, and comprehensive progress reports. Parents stay informed and engaged while teachers maintain meaningful relationships with every family.",
-        badge: "Stay Connected",
+        headline: "Real-Time Family Connection",
+        body: "Bridge the home-school gap with daily progress updates and easy communication tools. Empower parents to become active, informed advocates for their children, reinforcing that learning happens everywhere, not just in school.",
+        badge: "Family Engagement",
     },
     {
         id: 3,
         state: "progress",
-        headline: "Real-Time Progress Tracking",
-        body: "Monitor student growth with visual dashboards that make data meaningful. Identify learning gaps early, celebrate achievements, and provide timely interventions with actionable insights delivered to both teachers and parents.",
-        badge: "Track Success",
+        headline: "Inclusive Support Network",
+        body: "Ensure success for every student, including those with learning disabilities or diverse backgrounds. Provide resources in home languages and help families navigate the school system, creating a truly inclusive community.",
+        badge: "Access for All",
     },
     {
         id: 4,
         state: "collaboration",
         headline: "Collaborative Learning Ecosystem",
-        body: "Foster partnership between educators and families through shared goals, co-created action plans, and transparent communication. Together, create a support network that empowers every student to thrive academically and emotionally.",
+        body: "Foster partnership between educators and families through shared goals. Connect school learning to practical home activities, ensuring a supportive environment where every student can thrive academically and emotionally.",
         badge: "Work Together",
     },
 ]
@@ -107,22 +108,19 @@ export default function TeacherParentScrollytelling() {
                                 ref={(el) => {
                                     sectionRefs.current[index] = el
                                 }}
-                                className="min-h-[80vh] px-6 py-12 transition-all duration-700 ease-out lg:px-12"
+                                className="min-h-[80vh] px-6 py-12 transition-all duration-700 ease-out lg:px-12 flex items-center"
                                 style={{
                                     opacity: activeSection === index ? 1 : 0.3,
                                     filter: activeSection === index ? "blur(0px)" : "blur(1px)",
                                     transform: activeSection === index ? "scale(1)" : "scale(0.98)",
                                 }}
                             >
-                                <div className="max-w-lg">
-                                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-                                        {section.badge}
-                                    </div>
-                                    <h3 className="mb-4 text-balance font-sans text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                                        {section.headline}
-                                    </h3>
-                                    <p className="text-pretty text-lg leading-relaxed text-muted-foreground">{section.body}</p>
-                                </div>
+                                <SkeletonCard
+                                    badge={section.badge}
+                                    title={section.headline}
+                                    description={section.body}
+                                    className="w-full max-w-lg"
+                                />
                             </div>
                         ))}
                     </div>

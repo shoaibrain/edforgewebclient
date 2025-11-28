@@ -339,7 +339,7 @@ export default function Navbar() {
                         }}
                     >
                         <div
-                            className={`relative bg-[#0f172a]/20 backdrop-blur-sm border border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-out origin-top ${showDropdown
+                            className={`relative bg-[#0f172a]/80 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-out origin-top ${showDropdown
                                 ? "opacity-100 translate-y-0 scale-100 visible"
                                 : "opacity-0 -translate-y-4 scale-95 invisible"
                                 }`}
@@ -414,7 +414,7 @@ export default function Navbar() {
                                                         <Link
                                                             key={idx}
                                                             href={subItem.href}
-                                                            className="group flex items-start gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors duration-200"
+                                                            className="group flex items-start gap-4 p-4 rounded-xl bg-[#1e293b] hover:bg-[#334155] border border-white/10 transition-colors duration-200"
                                                         >
                                                             <div
                                                                 className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center bg-white/5 border border-white/5 group-hover:border-white/10 transition-all duration-300 group-hover:scale-110"

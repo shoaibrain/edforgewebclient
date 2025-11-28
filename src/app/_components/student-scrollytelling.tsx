@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { StudentDashboard } from "./student-dashboard"
+import { SkeletonCard } from "./skeleton-card"
 
 type DashboardState = "learning" | "engagement" | "achievements" | "personalized"
 
@@ -17,30 +18,30 @@ const sections: ScrollSection[] = [
     {
         id: 1,
         state: "learning",
-        headline: "Interactive Learning Experiences",
-        body: "Discover education that adapts to you. Engaging multimedia content, gamified lessons, and interactive activities make learning exciting. Explore subjects at your own pace with tools designed to match how you learn best.",
-        badge: "Learn Your Way",
+        headline: "Interactive Skill Mastery",
+        body: "Go beyond textbooks with interactive simulations and virtual models. Explore ancient cities or conduct safe chemistry experiments. Build and create projects that encourage deeper exploration and mastery of academic concepts.",
+        badge: "Deep Learning",
     },
     {
         id: 2,
         state: "engagement",
-        headline: "Gamified Achievement System",
-        body: "Earn badges, climb leaderboards, and unlock rewards as you master new skills. Transform homework into adventures and tests into quests. Stay motivated with instant feedback and celebrate every milestone on your educational journey.",
-        badge: "Level Up",
+        headline: "Growth Mindset & Grit",
+        body: "Frame mistakes as opportunities to learn. Develop a toolkit of strategies to apply when faced with challenges. We reward persistence and tenacity, helping you build the resilience needed to solve difficult problems.",
+        badge: "Build Character",
     },
     {
         id: 3,
         state: "achievements",
-        headline: "Track Your Success Story",
-        body: "Visualize your growth with beautiful progress dashboards. See your strengths shine and identify areas for improvement with gentle guidance. Every assignment, quiz, and project builds your portfolio of achievements.",
-        badge: "Your Journey",
+        headline: "Lifelong Learning Toolkit",
+        body: "Develop non-cognitive skills that are critical for long-term success. Track your growth in creativity, collaboration, and critical thinking alongside your academic achievements. Believe in your ability to improve and succeed.",
+        badge: "Skills for Life",
     },
     {
         id: 4,
         state: "personalized",
-        headline: "AI-Powered Personal Learning",
-        body: "Experience education that knows you. Smart recommendations suggest resources based on your interests and learning style. Get help exactly when you need it with AI tutoring that explains concepts in ways that make sense to you.",
-        badge: "Just For You",
+        headline: "Future Pathways",
+        body: "Plan your future with college-to-career maps and interactive course planning. Connect with alumni in fields that interest you to gain perspective and advice. Visualize your path to graduation and beyond.",
+        badge: "Your Future",
     },
 ]
 
@@ -116,22 +117,19 @@ export default function StudentScrollytelling() {
                                 ref={(el) => {
                                     sectionRefs.current[index] = el
                                 }}
-                                className="min-h-[80vh] px-6 py-12 transition-all duration-700 ease-out lg:px-12"
+                                className="min-h-[80vh] px-6 py-12 transition-all duration-700 ease-out lg:px-12 flex items-center"
                                 style={{
                                     opacity: activeSection === index ? 1 : 0.3,
                                     filter: activeSection === index ? "blur(0px)" : "blur(1px)",
                                     transform: activeSection === index ? "scale(1)" : "scale(0.98)",
                                 }}
                             >
-                                <div className="max-w-lg">
-                                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-chart-3/20 bg-chart-3/10 px-3 py-1 text-xs font-medium text-chart-3">
-                                        {section.badge}
-                                    </div>
-                                    <h3 className="mb-4 text-balance font-sans text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                                        {section.headline}
-                                    </h3>
-                                    <p className="text-pretty text-lg leading-relaxed text-muted-foreground">{section.body}</p>
-                                </div>
+                                <SkeletonCard
+                                    badge={section.badge}
+                                    title={section.headline}
+                                    description={section.body}
+                                    className="w-full max-w-lg"
+                                />
                             </div>
                         ))}
                     </div>

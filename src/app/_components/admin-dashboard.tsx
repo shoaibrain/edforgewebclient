@@ -1,10 +1,31 @@
 "use client"
+import {
+    Area,
+    AreaChart,
+    Bar,
+    BarChart,
+    Line,
+    LineChart,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
+} from "recharts"
 import { useState, useEffect } from "react"
 import { Building2, GraduationCap, Users, TrendingUp, MapPin, UserCheck, BarChart3, ChevronLeft, ChevronRight } from "lucide-react"
 
 interface AdminDashboardProps {
     activeState: "overview" | "multi-campus" | "hr" | "analytics"
 }
+
+const data = [
+    { name: "Jan", value: 400 },
+    { name: "Feb", value: 300 },
+    { name: "Mar", value: 600 },
+    { name: "Apr", value: 800 },
+    { name: "May", value: 500 },
+    { name: "Jun", value: 700 },
+]
 
 export function AdminDashboard({ activeState }: AdminDashboardProps) {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
@@ -49,8 +70,8 @@ export function AdminDashboard({ activeState }: AdminDashboardProps) {
                                 <div
                                     key={item.state}
                                     className={`group flex items-center gap-3 rounded-xl px-3 py-3 transition-all cursor-pointer ${activeState === item.state
-                                            ? "bg-primary/10 text-primary"
-                                            : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                                        ? "bg-primary/10 text-primary"
+                                        : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                                         } ${isSidebarCollapsed ? "justify-center" : ""}`}
                                 >
                                     <item.icon className={`h-5 w-5 shrink-0 ${activeState === item.state ? "text-primary" : ""}`} />
@@ -303,22 +324,66 @@ export function AdminDashboard({ activeState }: AdminDashboardProps) {
                                     <h4 className="mb-4 text-sm font-semibold text-foreground">Budget Utilization</h4>
                                     <div className="mb-4 flex items-center justify-center">
                                         <div className="relative h-32 w-32">
-                                            <svg className="h-full w-full -rotate-90" viewBox="0 0 100 100">
-                                                <circle cx="50" cy="50" r="40" fill="none" stroke="oklch(0.22 0.02 264)" strokeWidth="12" />
-                                                <circle
-                                                    cx="50"
-                                                    cy="50"
-                                                    r="40"
-                                                    fill="none"
-                                                    stroke="url(#gradient)"
-                                                    strokeWidth="12"
-                                                    strokeDasharray="251.2"
-                                                    strokeDashoffset="62.8"
-                                                    strokeLinecap="round"
-                                                />
-                                            </svg>
-                                            <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-foreground">
-                                                75%
+                                            <div className="h-[200px] w-full">
+                                                <ResponsiveContainer width="100%" height="100%">
+                                                    <AreaChart data={data}>
+                                                        <defs>
+                                                            <linearGradient id="colorStudents" x1="0" y1="0" x2="0" y2="1">
+                                                                <stop offset="5%" stopColor="#e76f51" stopOpacity={0.3} />
+                                                                <stop offset="95%" stopColor="#e76f51" stopOpacity={0} />
+                                                            </linearGradient>
+                                                            <linearGradient id="colorStaff" x1="0" y1="0" x2="0" y2="1">
+                                                                <stop offset="5%" stopColor="#2a9d8f" stopOpacity={0.3} />
+                                                                <stop offset="95%" stopColor="#2a9d8f" stopOpacity={0} />
+                                                            </linearGradient>
+                                                            <linearGradient id="colorBudget" x1="0" y1="0" x2="0" y2="1">
+                                                                <stop offset="5%" stopColor="#e9c46a" stopOpacity={0.3} />
+                                                                <stop offset="95%" stopColor="#e9c46a" stopOpacity={0} />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <XAxis
+                                                            dataKey="name"
+                                                            stroke="hsl(var(--muted-foreground))"
+                                                            fontSize={12}
+                                                            tickLine={false}
+                                                            axisLine={false}
+                                                        />
+                                                        <YAxis
+                                                            stroke="hsl(var(--muted-foreground))"
+                                                            fontSize={12}
+                                                            tickLine={false}
+                                                            axisLine={false}
+                                                            tickFormatter={(value) => `${value}%`}
+                                                        />
+                                                        <Tooltip
+                                                            contentStyle={{
+                                                                backgroundColor: "hsl(var(--background))",
+                                                                borderColor: "hsl(var(--border))",
+                                                                borderRadius: "8px",
+                                                            }}
+                                                            itemStyle={{ color: "hsl(var(--foreground))" }}
+                                                        />
+                                                        <Area
+                                                            type="monotone"
+                                                            dataKey="value"
+                                                            name="Retention"
+                                                            stroke="#e76f51"
+                                                            fillOpacity={1}
+                                                            fill="url(#colorStudents)"
+                                                            strokeWidth={2}
+                                                        />
+                                                        <Area
+                                                            type="monotone"
+                                                            dataKey="value" // Using same data for demo, but would be different in real app
+                                                            name="Efficiency"
+                                                            stroke="#2a9d8f"
+                                                            fillOpacity={1}
+                                                            fill="url(#colorStaff)"
+                                                            strokeWidth={2}
+                                                            strokeDasharray="5 5"
+                                                        />
+                                                    </AreaChart>
+                                                </ResponsiveContainer>
                                             </div>
                                         </div>
                                     </div>
