@@ -27,7 +27,7 @@ async function getTokenEndpointFromWellKnown(): Promise<string> {
   }
 
   const wellKnownUrl = process.env.NEXT_PUBLIC_WELL_KNOWN_ENDPOINT_URL!
-  
+
   try {
     const response = await fetch(wellKnownUrl, {
       method: "GET",
@@ -78,7 +78,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
         grant_type: "refresh_token",
         client_id: process.env.NEXT_PUBLIC_CLIENT_ID!,
         refresh_token: token.refreshToken,
-        scope: "openid profile email", // ✅ CRITICAL: Required for Cognito to return id_token
+        scope: "openid profile email https://edforge.net/tenant_read https://edforge.net/tenant_write https://edforge.net/user_read https://edforge.net/user_write", // ✅ CRITICAL: Required for Cognito to return id_token
       }),
     })
 
@@ -131,7 +131,7 @@ const cognitoProvider = {
   wellKnown: process.env.NEXT_PUBLIC_WELL_KNOWN_ENDPOINT_URL, // Basic Tier User Pool OIDC discovery
   authorization: {
     params: {
-      scope: "openid profile email", // Basic scopes - custom scopes can be added if configured in Cognito
+      scope: "openid profile email https://edforge.net/tenant_read https://edforge.net/tenant_write https://edforge.net/user_read https://edforge.net/user_write", // Basic scopes + Custom scopes
       prompt: "login", // Force re-authentication - always show login form even if session exists
     },
   },
