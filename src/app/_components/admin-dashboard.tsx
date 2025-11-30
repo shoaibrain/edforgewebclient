@@ -2,65 +2,105 @@
 import {
     Area,
     AreaChart,
-    Bar,
-    BarChart,
+    CartesianGrid,
+    Cell,
     Line,
     LineChart,
+    Pie,
+    PieChart,
     ResponsiveContainer,
     Tooltip,
     XAxis,
     YAxis,
 } from "recharts"
 import { useState, useEffect } from "react"
-import { Building2, GraduationCap, Users, TrendingUp, MapPin, UserCheck, BarChart3, ChevronLeft, ChevronRight } from "lucide-react"
+import {
+    Building2,
+    GraduationCap,
+    Users,
+    TrendingUp,
+    MapPin,
+    UserCheck,
+    BarChart3,
+    ChevronLeft,
+    ChevronRight,
+    DollarSign,
+    AlertCircle,
+    Search,
+    Bell,
+    School,
+    ArrowRight,
+    Sparkles,
+    BrainCircuit
+} from "lucide-react"
 
 interface AdminDashboardProps {
     activeState: "overview" | "multi-campus" | "hr" | "analytics"
 }
 
-const data = [
-    { name: "Jan", value: 400 },
-    { name: "Feb", value: 300 },
-    { name: "Mar", value: 600 },
-    { name: "Apr", value: 800 },
-    { name: "May", value: 500 },
-    { name: "Jun", value: 700 },
+// --- Mock Data ---
+
+const overviewData = [
+    { name: "Jan", budget: 4000, actual: 2400 },
+    { name: "Feb", budget: 3000, actual: 1398 },
+    { name: "Mar", budget: 2000, actual: 9800 },
+    { name: "Apr", budget: 2780, actual: 3908 },
+    { name: "May", budget: 1890, actual: 4800 },
+    { name: "Jun", budget: 2390, actual: 3800 },
+    { name: "Jul", budget: 3490, actual: 4300 },
+]
+
+const campusData = [
+    { name: "Lincoln High", type: "High School", students: 1240, staff: 85, health: 98, status: "Optimal", image: "https://images.unsplash.com/photo-1593118247619-e2d6f056869e?q=80&w=800&auto=format&fit=crop", icon: Building2 },
+    { name: "Washington MS", type: "Middle School", students: 850, staff: 62, health: 92, status: "Good", image: "https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?q=80&w=800&auto=format&fit=crop", icon: School },
+    { name: "Jefferson Elem", type: "Elementary", students: 600, staff: 45, health: 88, status: "Attention", image: "https://images.unsplash.com/photo-1588072432836-e10032774350?q=80&w=800&auto=format&fit=crop", icon: School },
+    { name: "Roosevelt Acad", type: "High School", students: 1100, staff: 78, health: 95, status: "Optimal", image: "https://images.unsplash.com/photo-1564981797816-1043664bf78d?q=80&w=800&auto=format&fit=crop", icon: Building2 },
+    { name: "Kennedy Prep", type: "K-12", students: 920, staff: 70, health: 96, status: "Optimal", image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800&auto=format&fit=crop", icon: Building2 },
+]
+
+const hrData = [
+    { name: "Teaching", value: 65, color: "#3b82f6" },
+    { name: "Admin", value: 15, color: "#10b981" },
+    { name: "Support", value: 20, color: "#f59e0b" },
 ]
 
 export function AdminDashboard({ activeState }: AdminDashboardProps) {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
 
-    // Auto-toggle sidebar for demonstration
+    // Auto-toggle sidebar for demonstration effect
     useEffect(() => {
         const interval = setInterval(() => {
             setIsSidebarCollapsed(prev => !prev)
-        }, 5000)
+        }, 8000)
         return () => clearInterval(interval)
     }, [])
 
     return (
-        <div className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-2xl shadow-black/40 transition-all duration-800">
+        <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card shadow-2xl shadow-black/20 transition-all duration-500 flex flex-col h-[600px]">
+            {/* Glass Overlay Effect */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-accent/5" />
+
             {/* Dashboard Container */}
-            <div className="flex h-[700px]">
+            <div className="flex flex-1 overflow-hidden">
                 {/* Sidebar */}
                 <div
-                    className={`relative border-r border-border bg-sidebar transition-all duration-500 ease-in-out ${isSidebarCollapsed ? "w-20" : "w-64"
+                    className={`relative z-10 hidden border-r border-border/50 bg-card/50 backdrop-blur-xl transition-all duration-500 ease-in-out md:block ${isSidebarCollapsed ? "w-20" : "w-64"
                         }`}
                 >
-                    <div className="flex h-full flex-col py-8">
+                    <div className="flex h-full flex-col py-6">
                         {/* Logo Area */}
-                        <div className={`flex items-center gap-3 px-6 mb-8 ${isSidebarCollapsed ? "justify-center" : ""}`}>
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg">
+                        <div className={`mb-8 flex items-center gap-3 px-6 ${isSidebarCollapsed ? "justify-center px-0" : ""}`}>
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-lg shadow-primary/20">
                                 <Building2 className="h-5 w-5" />
                             </div>
-                            <span className={`font-bold text-lg text-sidebar-foreground transition-opacity duration-300 ${isSidebarCollapsed ? "opacity-0 hidden" : "opacity-100"
+                            <span className={`font-bold text-lg tracking-tight transition-opacity duration-300 ${isSidebarCollapsed ? "hidden opacity-0" : "opacity-100"
                                 }`}>
                                 EdForge
                             </span>
                         </div>
 
                         {/* Navigation Items */}
-                        <div className="flex flex-col gap-2 px-4">
+                        <div className="flex flex-col gap-1.5 px-3">
                             {[
                                 { icon: BarChart3, label: "Overview", state: "overview" },
                                 { icon: MapPin, label: "Campuses", state: "multi-campus" },
@@ -69,107 +109,167 @@ export function AdminDashboard({ activeState }: AdminDashboardProps) {
                             ].map((item) => (
                                 <div
                                     key={item.state}
-                                    className={`group flex items-center gap-3 rounded-xl px-3 py-3 transition-all cursor-pointer ${activeState === item.state
-                                        ? "bg-primary/10 text-primary"
-                                        : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                                        } ${isSidebarCollapsed ? "justify-center" : ""}`}
+                                    className={`group flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 transition-all ${activeState === item.state
+                                        ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                        } ${isSidebarCollapsed ? "justify-center px-0" : ""}`}
                                 >
-                                    <item.icon className={`h-5 w-5 shrink-0 ${activeState === item.state ? "text-primary" : ""}`} />
-                                    <span className={`font-medium whitespace-nowrap transition-all duration-300 ${isSidebarCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
+                                    <item.icon className={`h-4 w-4 shrink-0`} />
+                                    <span className={`text-sm font-medium whitespace-nowrap transition-all duration-300 ${isSidebarCollapsed ? "hidden w-0 opacity-0" : "opacity-100"
                                         }`}>
                                         {item.label}
                                     </span>
-
-                                    {/* Tooltip for collapsed state */}
-                                    {isSidebarCollapsed && (
-                                        <div className="absolute left-full ml-2 hidden rounded-md bg-popover px-2 py-1 text-xs text-popover-foreground shadow-md group-hover:block z-50">
-                                            {item.label}
-                                        </div>
-                                    )}
                                 </div>
                             ))}
                         </div>
-
-                        {/* Collapse Toggle */}
-                        <button
-                            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                            className="absolute -right-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background shadow-md hover:bg-accent hover:text-accent-foreground transition-colors"
-                        >
-                            {isSidebarCollapsed ? (
-                                <ChevronRight className="h-3 w-3" />
-                            ) : (
-                                <ChevronLeft className="h-3 w-3" />
-                            )}
-                        </button>
                     </div>
                 </div>
 
                 {/* Main Content */}
-                <div className="flex-1 overflow-hidden">
+                <div className="flex flex-1 flex-col overflow-hidden bg-background/30 backdrop-blur-sm">
                     {/* Top Navigation */}
-                    <div className="flex h-16 items-center justify-between border-b border-border bg-card px-6">
-                        <h1 className="text-lg font-semibold text-foreground">District Dashboard</h1>
-                        <div className="flex items-center gap-3">
-                            <img
-                                src="https://api.dicebear.com/9.x/adventurer/svg?seed=AdminUser&backgroundColor=b6e3f4"
-                                alt="Admin Avatar"
-                                className="h-9 w-9 rounded-full border border-border bg-background"
-                            />
+                    <div className="flex h-14 shrink-0 items-center justify-between border-b border-border/50 px-6 backdrop-blur-md">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                                className="hidden rounded-lg p-1.5 hover:bg-muted md:block"
+                            >
+                                {isSidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+                            </button>
+                            <div className="relative hidden lg:block">
+                                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                                <input
+                                    type="text"
+                                    placeholder="Search..."
+                                    className="h-8 w-48 rounded-lg border border-border/50 bg-background/50 pl-9 text-xs outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <button className="relative rounded-lg p-1.5 hover:bg-muted transition-colors">
+                                <Bell className="h-4 w-4 text-muted-foreground" />
+                                <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-red-500 ring-2 ring-background"></span>
+                            </button>
+
+                            {/* User Profile - Refined */}
+                            <div className="flex items-center gap-3 pl-2">
+                                <div className="text-right hidden sm:block">
+                                    <div className="text-sm font-semibold leading-none">Dr. R. Wilson</div>
+                                    <div className="text-[10px] text-muted-foreground mt-0.5">Superintendent</div>
+                                </div>
+                                <div className="relative cursor-pointer group">
+                                    <img
+                                        src="https://api.dicebear.com/9.x/avataaars/svg?seed=Felix"
+                                        alt="Admin"
+                                        className="h-8 w-8 rounded-full bg-muted border border-border group-hover:border-primary transition-colors"
+                                    />
+                                    <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full border border-background bg-green-500"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Content Area with State Transitions */}
-                    <div className="h-[calc(100%-4rem)] overflow-hidden bg-background/50 p-6">
+                    {/* Content Area */}
+                    <div className="relative flex-1 overflow-hidden p-5">
                         {/* Overview State */}
                         <div
-                            className={`h-full transition-all duration-800 ${activeState === "overview" ? "opacity-100 blur-0" : "pointer-events-none absolute opacity-0 blur-sm"
+                            className={`absolute inset-0 p-5 transition-all duration-700 ease-in-out overflow-y-auto ${activeState === "overview" ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0 pointer-events-none"
                                 }`}
                         >
-                            <div className="grid h-full grid-cols-3 gap-4">
-                                <div className="rounded-2xl border border-border bg-card p-5 shadow-lg">
-                                    <div className="mb-3 flex items-center justify-between">
-                                        <div className="rounded-lg bg-primary/10 p-2">
-                                            <GraduationCap className="h-5 w-5 text-primary" />
-                                        </div>
-                                        <span className="text-xs text-green-500">+12%</span>
-                                    </div>
-                                    <div className="text-3xl font-bold text-foreground">45,892</div>
-                                    <div className="text-sm text-muted-foreground">Total Students</div>
+                            <div className="mb-5 flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-xl font-bold tracking-tight text-foreground">District Overview</h2>
+                                    <p className="text-xs text-muted-foreground">Real-time performance metrics.</p>
                                 </div>
-                                <div className="rounded-2xl border border-border bg-card p-5 shadow-lg">
+                                <button className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors">Export</button>
+                            </div>
+
+                            <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+                                <MetricCard
+                                    title="Total Students"
+                                    value="45,231"
+                                    trend="+2.5%"
+                                    trendUp={true}
+                                    icon={GraduationCap}
+                                    color="text-blue-500"
+                                    bgColor="bg-blue-500/10"
+                                />
+                                <MetricCard
+                                    title="Total Staff"
+                                    value="3,402"
+                                    trend="+1.2%"
+                                    trendUp={true}
+                                    icon={Users}
+                                    color="text-purple-500"
+                                    bgColor="bg-purple-500/10"
+                                />
+                                <MetricCard
+                                    title="Budget Utilized"
+                                    value="68%"
+                                    trend="-4.1%"
+                                    trendUp={false}
+                                    icon={DollarSign}
+                                    color="text-green-500"
+                                    bgColor="bg-green-500/10"
+                                />
+                                <MetricCard
+                                    title="Avg Attendance"
+                                    value="94.2%"
+                                    trend="+0.8%"
+                                    trendUp={true}
+                                    icon={UserCheck}
+                                    color="text-orange-500"
+                                    bgColor="bg-orange-500/10"
+                                />
+                            </div>
+
+                            <div className="mt-5 grid gap-5 md:grid-cols-7">
+                                <div className="col-span-4 rounded-xl border border-border/50 bg-card/50 p-4 shadow-sm backdrop-blur-sm">
                                     <div className="mb-3 flex items-center justify-between">
-                                        <div className="rounded-lg bg-accent/10 p-2">
-                                            <Users className="h-5 w-5 text-accent" />
-                                        </div>
-                                        <span className="text-xs text-green-500">+5%</span>
+                                        <h3 className="font-semibold text-sm">Financial Performance</h3>
+                                        <select className="rounded-md border border-border bg-background px-2 py-0.5 text-[10px] outline-none">
+                                            <option>This Year</option>
+                                            <option>Last Year</option>
+                                        </select>
                                     </div>
-                                    <div className="text-3xl font-bold text-foreground">2,847</div>
-                                    <div className="text-sm text-muted-foreground">Staff Members</div>
-                                </div>
-                                <div className="rounded-2xl border border-border bg-card p-5 shadow-lg">
-                                    <div className="mb-3 flex items-center justify-between">
-                                        <div className="rounded-lg bg-chart-3/10 p-2">
-                                            <Building2 className="h-5 w-5 text-chart-3" />
-                                        </div>
-                                        <span className="text-xs text-muted-foreground">28 Active</span>
+                                    <div className="h-[200px] w-full">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <AreaChart data={overviewData}>
+                                                <defs>
+                                                    <linearGradient id="colorBudget" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                                                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                                    </linearGradient>
+                                                </defs>
+                                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.4} />
+                                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} dy={10} />
+                                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} dx={-10} />
+                                                <Tooltip
+                                                    contentStyle={{ backgroundColor: "hsl(var(--card))", borderColor: "hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }}
+                                                    itemStyle={{ color: "hsl(var(--foreground))" }}
+                                                />
+                                                <Area type="monotone" dataKey="actual" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorBudget)" />
+                                                <Area type="monotone" dataKey="budget" stroke="#94a3b8" strokeWidth={2} strokeDasharray="5 5" fill="none" />
+                                            </AreaChart>
+                                        </ResponsiveContainer>
                                     </div>
-                                    <div className="text-3xl font-bold text-foreground">32</div>
-                                    <div className="text-sm text-muted-foreground">Campuses</div>
                                 </div>
-                                <div className="col-span-3 rounded-2xl border border-border bg-card p-5 shadow-lg">
-                                    <h3 className="mb-4 text-sm font-semibold text-foreground">District Performance Overview</h3>
-                                    <div className="flex h-32 items-end justify-between gap-2">
-                                        {[65, 78, 82, 75, 88, 92, 85, 90, 94, 89, 95, 98].map((height, i) => (
-                                            <div
-                                                key={i}
-                                                className="flex-1 rounded-t bg-gradient-to-t from-primary to-accent"
-                                                style={{ height: `${height}%` }}
-                                            ></div>
+                                <div className="col-span-3 rounded-xl border border-border/50 bg-card/50 p-4 shadow-sm backdrop-blur-sm">
+                                    <h3 className="mb-3 font-semibold text-sm">Action Items</h3>
+                                    <div className="space-y-2.5">
+                                        {[
+                                            { title: "Budget Review", desc: "Q3 allocation pending", priority: "High", color: "bg-red-500" },
+                                            { title: "Staff Hiring", desc: "3 Science positions", priority: "Medium", color: "bg-yellow-500" },
+                                            { title: "Facility Check", desc: "North Wing maint.", priority: "Low", color: "bg-blue-500" },
+                                        ].map((item, i) => (
+                                            <div key={i} className="flex items-start gap-3 rounded-lg border border-border/50 bg-background/50 p-2.5 transition-colors hover:bg-muted/50">
+                                                <div className={`mt-1 h-1.5 w-1.5 rounded-full ${item.color} shadow-sm`} />
+                                                <div>
+                                                    <div className="text-xs font-medium text-foreground">{item.title}</div>
+                                                    <div className="text-[10px] text-muted-foreground">{item.desc}</div>
+                                                </div>
+                                            </div>
                                         ))}
-                                    </div>
-                                    <div className="mt-3 flex justify-between text-xs text-muted-foreground">
-                                        <span>Jan</span>
-                                        <span>Dec</span>
                                     </div>
                                 </div>
                             </div>
@@ -177,37 +277,88 @@ export function AdminDashboard({ activeState }: AdminDashboardProps) {
 
                         {/* Multi-Campus State */}
                         <div
-                            className={`h-full transition-all duration-800 ${activeState === "multi-campus" ? "opacity-100 blur-0" : "pointer-events-none absolute opacity-0 blur-sm"
+                            className={`absolute inset-0 p-5 transition-all duration-700 ease-in-out overflow-y-auto ${activeState === "multi-campus" ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0 pointer-events-none"
                                 }`}
                         >
-                            <h3 className="mb-4 text-lg font-semibold text-foreground">Campus Network Overview</h3>
-                            <div className="space-y-3">
-                                {[
-                                    { name: "Lincoln High School", students: 1847, staff: 124, performance: 94 },
-                                    { name: "Washington Middle School", students: 1243, staff: 89, performance: 91 },
-                                    { name: "Jefferson Elementary", students: 892, staff: 67, performance: 88 },
-                                    { name: "Roosevelt Academy", students: 1456, staff: 102, performance: 96 },
-                                    { name: "Madison Prep School", students: 734, staff: 54, performance: 85 },
-                                ].map((campus, i) => (
-                                    <div
-                                        key={i}
-                                        className="rounded-xl border border-border bg-card p-4 shadow-lg transition-all hover:scale-[1.02]"
-                                    >
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent">
-                                                    <Building2 className="h-6 w-6 text-white" />
+                            <div className="mb-5 flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-xl font-bold tracking-tight text-foreground">Campus Operations</h2>
+                                    <p className="text-xs text-muted-foreground">Live status of all educational facilities.</p>
+                                </div>
+                                <button className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors">Filter</button>
+                            </div>
+
+                            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                                {campusData.map((campus, i) => (
+                                    <div key={i} className="group relative overflow-hidden rounded-xl border border-border/50 bg-card/50 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
+                                        {/* Image Banner */}
+                                        <div className="h-20 w-full relative overflow-hidden">
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+                                            <img
+                                                src={campus.image}
+                                                alt={campus.name}
+                                                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                            />
+                                        </div>
+
+                                        <div className="p-4">
+                                            {/* Icon Badge */}
+                                            <div className="absolute top-14 left-4 z-20 flex h-10 w-10 items-center justify-center rounded-xl border-4 border-background bg-card shadow-sm">
+                                                <campus.icon className="h-5 w-5 text-foreground" />
+                                            </div>
+
+                                            <div className="mt-6">
+                                                <div className="flex items-start justify-between">
+                                                    <div className="pr-2">
+                                                        <h3 className="font-bold text-base leading-tight truncate max-w-[120px]" title={campus.name}>{campus.name}</h3>
+                                                        <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{campus.type}</p>
+                                                    </div>
+                                                    <span
+                                                        className={`shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${campus.status === "Optimal"
+                                                            ? "bg-green-500/10 text-green-500"
+                                                            : campus.status === "Good"
+                                                                ? "bg-blue-500/10 text-blue-500"
+                                                                : "bg-yellow-500/10 text-yellow-500"
+                                                            }`}
+                                                    >
+                                                        {campus.status}
+                                                    </span>
                                                 </div>
-                                                <div>
-                                                    <div className="font-semibold text-foreground">{campus.name}</div>
-                                                    <div className="text-sm text-muted-foreground">
-                                                        {campus.students} students · {campus.staff} staff
+
+                                                <div className="mt-3 grid grid-cols-2 gap-2">
+                                                    <div className="rounded-lg bg-muted/50 p-2.5">
+                                                        <div className="flex items-center gap-1.5 text-muted-foreground mb-0.5">
+                                                            <GraduationCap className="h-3 w-3" />
+                                                            <span className="text-[10px] font-medium">Students</span>
+                                                        </div>
+                                                        <div className="text-base font-bold">{campus.students}</div>
+                                                    </div>
+                                                    <div className="rounded-lg bg-muted/50 p-2.5">
+                                                        <div className="flex items-center gap-1.5 text-muted-foreground mb-0.5">
+                                                            <Users className="h-3 w-3" />
+                                                            <span className="text-[10px] font-medium">Staff</span>
+                                                        </div>
+                                                        <div className="text-base font-bold">{campus.staff}</div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div className="text-right">
-                                                <div className="text-2xl font-bold text-primary">{campus.performance}%</div>
-                                                <div className="text-xs text-muted-foreground">Performance</div>
+
+                                                <div className="mt-3">
+                                                    <div className="flex items-center justify-between text-[10px] mb-1">
+                                                        <span className="font-medium text-muted-foreground">Health Score</span>
+                                                        <span className="font-bold">{campus.health}%</span>
+                                                    </div>
+                                                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                                                        <div
+                                                            className={`h-full rounded-full transition-all duration-1000 ${campus.health > 90 ? "bg-green-500" : "bg-yellow-500"}`}
+                                                            style={{ width: `${campus.health}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-border/50 bg-background/50 py-1.5 text-xs font-medium transition-colors hover:bg-muted hover:text-primary group-hover:border-primary/20">
+                                                    View Dashboard
+                                                    <ArrowRight className="h-3 w-3" />
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -217,76 +368,86 @@ export function AdminDashboard({ activeState }: AdminDashboardProps) {
 
                         {/* HR State */}
                         <div
-                            className={`h-full transition-all duration-800 ${activeState === "hr" ? "opacity-100 blur-0" : "pointer-events-none absolute opacity-0 blur-sm"
+                            className={`absolute inset-0 p-5 transition-all duration-700 ease-in-out overflow-y-auto ${activeState === "hr" ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0 pointer-events-none"
                                 }`}
                         >
-                            <h3 className="mb-4 text-lg font-semibold text-foreground">Human Resources Dashboard</h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="rounded-2xl border border-border bg-card p-5 shadow-lg">
-                                    <div className="mb-3 flex items-center gap-3">
-                                        <div className="rounded-lg bg-primary/10 p-2">
-                                            <UserCheck className="h-5 w-5 text-primary" />
-                                        </div>
-                                        <div className="text-sm font-medium text-foreground">Active Personnel</div>
-                                    </div>
-                                    <div className="mb-4 text-4xl font-bold text-foreground">2,847</div>
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-muted-foreground">Teachers</span>
-                                            <span className="font-medium text-foreground">1,892</span>
-                                        </div>
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-muted-foreground">Administrators</span>
-                                            <span className="font-medium text-foreground">342</span>
-                                        </div>
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-muted-foreground">Support Staff</span>
-                                            <span className="font-medium text-foreground">613</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="rounded-2xl border border-border bg-card p-5 shadow-lg">
-                                    <div className="mb-3 flex items-center gap-3">
-                                        <div className="rounded-lg bg-accent/10 p-2">
-                                            <TrendingUp className="h-5 w-5 text-accent" />
-                                        </div>
-                                        <div className="text-sm font-medium text-foreground">Certifications</div>
-                                    </div>
-                                    <div className="mb-4 text-4xl font-bold text-foreground">98.2%</div>
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-muted-foreground">Current</span>
-                                            <span className="font-medium text-green-500">2,796</span>
-                                        </div>
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-muted-foreground">Expiring Soon</span>
-                                            <span className="font-medium text-yellow-500">38</span>
-                                        </div>
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-muted-foreground">Expired</span>
-                                            <span className="font-medium text-red-500">13</span>
+                            <div className="mb-5">
+                                <h2 className="text-xl font-bold tracking-tight text-foreground">Workforce Analytics</h2>
+                                <p className="text-xs text-muted-foreground">Staff distribution and retention metrics.</p>
+                            </div>
+
+                            <div className="grid gap-5 md:grid-cols-2">
+                                <div className="rounded-xl border border-border/50 bg-card/50 p-5 shadow-sm backdrop-blur-sm">
+                                    <h3 className="mb-4 font-semibold text-sm">Role Distribution</h3>
+                                    <div className="flex items-center justify-center">
+                                        <div className="h-[200px] w-[200px]">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <PieChart>
+                                                    <Pie
+                                                        data={hrData}
+                                                        cx="50%"
+                                                        cy="50%"
+                                                        innerRadius={60}
+                                                        outerRadius={80}
+                                                        paddingAngle={5}
+                                                        dataKey="value"
+                                                    >
+                                                        {hrData.map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                                        ))}
+                                                    </Pie>
+                                                    <Tooltip />
+                                                </PieChart>
+                                            </ResponsiveContainer>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="col-span-2 rounded-2xl border border-border bg-card p-5 shadow-lg">
-                                    <h4 className="mb-3 text-sm font-semibold text-foreground">Recent Onboarding</h4>
-                                    <div className="space-y-3">
-                                        {["Sarah Johnson", "Michael Chen", "Emily Rodriguez", "David Kim"].map((name, i) => (
-                                            <div key={i} className="flex items-center justify-between rounded-lg bg-background/50 p-3">
-                                                <div className="flex items-center gap-3">
-                                                    <img
-                                                        src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${name}&backgroundColor=ffd5dc`}
-                                                        alt={name}
-                                                        className="h-10 w-10 rounded-full border border-border bg-background"
-                                                    />
-                                                    <div>
-                                                        <div className="text-sm font-medium text-foreground">{name}</div>
-                                                        <div className="text-xs text-muted-foreground">Teacher · Started {i + 1} days ago</div>
-                                                    </div>
-                                                </div>
-                                                <div className="text-xs font-medium text-green-500">Complete</div>
+                                    <div className="mt-4 flex justify-center gap-4">
+                                        {hrData.map((entry, i) => (
+                                            <div key={i} className="flex items-center gap-2">
+                                                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: entry.color }} />
+                                                <span className="text-[10px] font-medium text-muted-foreground">{entry.name}</span>
                                             </div>
                                         ))}
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="rounded-xl border border-border/50 bg-card/50 p-5 shadow-sm backdrop-blur-sm">
+                                        <div className="mb-3 flex items-center justify-between">
+                                            <h3 className="font-semibold text-sm">Retention Rate</h3>
+                                            <span className="text-green-500 font-bold text-base">96.5%</span>
+                                        </div>
+                                        <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                                            <div className="h-full w-[96.5%] rounded-full bg-green-500" />
+                                        </div>
+                                        <p className="mt-2 text-[10px] text-muted-foreground">Top 5% of districts in the state</p>
+                                    </div>
+
+                                    <div className="rounded-xl border border-border/50 bg-card/50 p-5 shadow-sm backdrop-blur-sm">
+                                        <div className="mb-3 flex items-center justify-between">
+                                            <h3 className="font-semibold text-sm">Professional Development</h3>
+                                            <span className="text-blue-500 font-bold text-base">842 hrs</span>
+                                        </div>
+                                        <div className="space-y-3">
+                                            {[
+                                                { name: "Advanced Pedagogy", progress: 75 },
+                                                { name: "Digital Literacy", progress: 45 },
+                                                { name: "Inclusive Classroom", progress: 90 },
+                                            ].map((course, i) => (
+                                                <div key={i}>
+                                                    <div className="mb-1 flex justify-between text-[10px] font-medium">
+                                                        <span>{course.name}</span>
+                                                        <span>{course.progress}%</span>
+                                                    </div>
+                                                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                                                        <div
+                                                            className="h-full rounded-full bg-primary"
+                                                            style={{ width: `${course.progress}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -294,135 +455,95 @@ export function AdminDashboard({ activeState }: AdminDashboardProps) {
 
                         {/* Analytics State */}
                         <div
-                            className={`h-full transition-all duration-800 ${activeState === "analytics" ? "opacity-100 blur-0" : "pointer-events-none absolute opacity-0 blur-sm"
+                            className={`absolute inset-0 p-5 transition-all duration-700 ease-in-out overflow-y-auto ${activeState === "analytics" ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0 pointer-events-none"
                                 }`}
                         >
-                            <h3 className="mb-4 text-lg font-semibold text-foreground">Strategic Analytics</h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="rounded-2xl border border-border bg-card p-5 shadow-lg">
-                                    <h4 className="mb-4 text-sm font-semibold text-foreground">Enrollment Trends</h4>
-                                    <div className="relative h-40">
-                                        <svg className="h-full w-full" viewBox="0 0 300 150">
-                                            <polyline
-                                                fill="none"
-                                                stroke="url(#gradient)"
-                                                strokeWidth="3"
-                                                points="0,120 50,100 100,80 150,70 200,50 250,30 300,20"
-                                            />
-                                            <defs>
-                                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                    <stop offset="0%" stopColor="oklch(0.58 0.24 264)" />
-                                                    <stop offset="100%" stopColor="oklch(0.48 0.24 264)" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
+                            <div className="mb-5">
+                                <h2 className="text-xl font-bold tracking-tight text-foreground">Predictive Insights</h2>
+                                <p className="text-xs text-muted-foreground">AI-driven analysis for future planning.</p>
+                            </div>
+
+                            <div className="grid gap-5 md:grid-cols-3">
+                                <div className="col-span-2 rounded-xl border border-border/50 bg-card/50 p-5 shadow-sm backdrop-blur-sm">
+                                    <h3 className="mb-4 font-semibold text-sm">Student Performance Forecast</h3>
+                                    <div className="h-[250px] w-full">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <LineChart data={overviewData}>
+                                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.4} />
+                                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} dy={10} />
+                                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} dx={-10} />
+                                                <Tooltip
+                                                    contentStyle={{ backgroundColor: "hsl(var(--card))", borderColor: "hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }}
+                                                    itemStyle={{ color: "hsl(var(--foreground))" }}
+                                                />
+                                                <Line type="monotone" dataKey="actual" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 4, fill: "#8b5cf6", strokeWidth: 0 }} activeDot={{ r: 6 }} />
+                                                <Line type="monotone" dataKey="budget" stroke="#cbd5e1" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                                            </LineChart>
+                                        </ResponsiveContainer>
                                     </div>
-                                    <div className="mt-2 text-2xl font-bold text-green-500">+15.3%</div>
-                                    <div className="text-sm text-muted-foreground">Year over year growth</div>
                                 </div>
-                                <div className="rounded-2xl border border-border bg-card p-5 shadow-lg">
-                                    <h4 className="mb-4 text-sm font-semibold text-foreground">Budget Utilization</h4>
-                                    <div className="mb-4 flex items-center justify-center">
-                                        <div className="relative h-32 w-32">
-                                            <div className="h-[200px] w-full">
-                                                <ResponsiveContainer width="100%" height="100%">
-                                                    <AreaChart data={data}>
-                                                        <defs>
-                                                            <linearGradient id="colorStudents" x1="0" y1="0" x2="0" y2="1">
-                                                                <stop offset="5%" stopColor="#e76f51" stopOpacity={0.3} />
-                                                                <stop offset="95%" stopColor="#e76f51" stopOpacity={0} />
-                                                            </linearGradient>
-                                                            <linearGradient id="colorStaff" x1="0" y1="0" x2="0" y2="1">
-                                                                <stop offset="5%" stopColor="#2a9d8f" stopOpacity={0.3} />
-                                                                <stop offset="95%" stopColor="#2a9d8f" stopOpacity={0} />
-                                                            </linearGradient>
-                                                            <linearGradient id="colorBudget" x1="0" y1="0" x2="0" y2="1">
-                                                                <stop offset="5%" stopColor="#e9c46a" stopOpacity={0.3} />
-                                                                <stop offset="95%" stopColor="#e9c46a" stopOpacity={0} />
-                                                            </linearGradient>
-                                                        </defs>
-                                                        <XAxis
-                                                            dataKey="name"
-                                                            stroke="hsl(var(--muted-foreground))"
-                                                            fontSize={12}
-                                                            tickLine={false}
-                                                            axisLine={false}
-                                                        />
-                                                        <YAxis
-                                                            stroke="hsl(var(--muted-foreground))"
-                                                            fontSize={12}
-                                                            tickLine={false}
-                                                            axisLine={false}
-                                                            tickFormatter={(value) => `${value}%`}
-                                                        />
-                                                        <Tooltip
-                                                            contentStyle={{
-                                                                backgroundColor: "hsl(var(--background))",
-                                                                borderColor: "hsl(var(--border))",
-                                                                borderRadius: "8px",
-                                                            }}
-                                                            itemStyle={{ color: "hsl(var(--foreground))" }}
-                                                        />
-                                                        <Area
-                                                            type="monotone"
-                                                            dataKey="value"
-                                                            name="Retention"
-                                                            stroke="#e76f51"
-                                                            fillOpacity={1}
-                                                            fill="url(#colorStudents)"
-                                                            strokeWidth={2}
-                                                        />
-                                                        <Area
-                                                            type="monotone"
-                                                            dataKey="value" // Using same data for demo, but would be different in real app
-                                                            name="Efficiency"
-                                                            stroke="#2a9d8f"
-                                                            fillOpacity={1}
-                                                            fill="url(#colorStaff)"
-                                                            strokeWidth={2}
-                                                            strokeDasharray="5 5"
-                                                        />
-                                                    </AreaChart>
-                                                </ResponsiveContainer>
+
+                                <div className="space-y-4">
+                                    <div className="rounded-xl border border-border/50 bg-gradient-to-br from-primary/10 to-accent/10 p-5 shadow-sm backdrop-blur-sm">
+                                        <div className="mb-3 flex items-center gap-2 text-primary">
+                                            <BrainCircuit className="h-5 w-5" />
+                                            <h3 className="font-semibold text-sm">Intelligent Insight</h3>
+                                        </div>
+                                        <p className="text-xs leading-relaxed text-foreground/80 text-pretty">
+                                            Enrollment projection models indicate a <strong>12% surge in STEM demand</strong> for Q3.
+                                        </p>
+                                        <div className="mt-2 rounded-lg bg-background/50 p-2 text-[10px] border border-primary/10">
+                                            <span className="font-semibold text-primary">Recommended Action:</span> Reallocate <strong>$45k</strong> from surplus to secure 3 adjunct lab instructors.
+                                        </div>
+                                        <button className="mt-4 w-full rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+                                            Execute Allocation
+                                        </button>
+                                    </div>
+
+                                    <div className="rounded-xl border border-border/50 bg-card/50 p-5 shadow-sm backdrop-blur-sm">
+                                        <h3 className="mb-3 font-semibold text-sm">Risk Assessment</h3>
+                                        <div className="space-y-2.5">
+                                            <div className="flex items-center justify-between rounded-lg bg-red-500/10 p-2.5 text-red-600">
+                                                <div className="flex items-center gap-2">
+                                                    <AlertCircle className="h-3.5 w-3.5" />
+                                                    <span className="text-xs font-medium">Budget Variance</span>
+                                                </div>
+                                                <span className="text-[10px] font-bold bg-red-500/20 px-1.5 py-0.5 rounded">HIGH</span>
+                                            </div>
+                                            <div className="flex items-center justify-between rounded-lg bg-yellow-500/10 p-2.5 text-yellow-600">
+                                                <div className="flex items-center gap-2">
+                                                    <AlertCircle className="h-3.5 w-3.5" />
+                                                    <span className="text-xs font-medium">Staff Turnover</span>
+                                                </div>
+                                                <span className="text-[10px] font-bold bg-yellow-500/20 px-1.5 py-0.5 rounded">MED</span>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="text-sm text-muted-foreground">$127.5M of $170M allocated</div>
-                                </div>
-                                <div className="col-span-2 rounded-2xl border border-border bg-card p-5 shadow-lg">
-                                    <h4 className="mb-4 text-sm font-semibold text-foreground">AI Insights & Recommendations</h4>
-                                    <div className="space-y-3">
-                                        {[
-                                            {
-                                                insight: "Consider redistributing resources to Lincoln High",
-                                                impact: "High",
-                                                color: "text-red-500",
-                                            },
-                                            {
-                                                insight: "Optimal time to launch teacher training program",
-                                                impact: "Medium",
-                                                color: "text-yellow-500",
-                                            },
-                                            {
-                                                insight: "Budget surplus available in Q3 for initiatives",
-                                                impact: "High",
-                                                color: "text-green-500",
-                                            },
-                                        ].map((item, i) => (
-                                            <div key={i} className="flex items-center justify-between rounded-lg bg-background/50 p-3">
-                                                <div className="flex items-center gap-3">
-                                                    <div className={`h-2 w-2 rounded-full ${item.color.replace("text-", "bg-")}`}></div>
-                                                    <span className="text-sm text-foreground">{item.insight}</span>
-                                                </div>
-                                                <span className={`text-xs font-medium ${item.color}`}>{item.impact}</span>
-                                            </div>
-                                        ))}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    )
+}
+
+function MetricCard({ title, value, trend, trendUp, icon: Icon, color, bgColor }: any) {
+    return (
+        <div className="rounded-xl border border-border/50 bg-card/50 p-4 shadow-sm backdrop-blur-sm transition-all hover:shadow-lg hover:-translate-y-1">
+            <div className="mb-3 flex items-center justify-between">
+                <div className={`rounded-lg p-2 ${bgColor}`}>
+                    <Icon className={`h-4 w-4 ${color}`} />
+                </div>
+                <span className={`flex items-center text-[10px] font-medium ${trendUp ? "text-green-500" : "text-red-500"}`}>
+                    {trendUp ? <TrendingUp className="mr-1 h-3 w-3" /> : <TrendingUp className="mr-1 h-3 w-3 rotate-180" />}
+                    {trend}
+                </span>
+            </div>
+            <div>
+                <div className="text-xl font-bold text-foreground tracking-tight">{value}</div>
+                <div className="mt-0.5 text-[10px] text-muted-foreground">{title}</div>
             </div>
         </div>
     )

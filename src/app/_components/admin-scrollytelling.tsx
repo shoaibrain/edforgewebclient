@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react"
 import { AdminDashboard } from "./admin-dashboard"
-import { SkeletonCard } from "./skeleton-card"
 
 type DashboardState = "overview" | "multi-campus" | "hr" | "analytics"
 
@@ -19,29 +18,29 @@ const sections: ScrollSection[] = [
         id: 1,
         state: "overview",
         headline: "Strategic Resource Allocation",
-        body: "Leverage open state and federal datasets to manage finances and identify skills needed for the future economy. Use labor statistics to guide curriculum planning and ensure students are prepared for high-growth job markets.",
-        badge: "Future Planning",
+        body: "Transform financial data into actionable insights. Monitor real-time budget utilization across all departments, identify cost-saving opportunities, and ensure every dollar directly contributes to student success. Our predictive models help you plan for future fiscal years with confidence.",
+        badge: "Financial Intelligence",
     },
     {
         id: 2,
         state: "multi-campus",
         headline: "Unified District Operations",
-        body: "Seamlessly coordinate operations across dozens of locations. Monitor performance metrics, standardize best practices, and ensure consistency while preserving each campus's unique identity and culture.",
-        badge: "Scale with Ease",
+        body: "Orchestrate operations across your entire district from a single pane of glass. Standardize best practices, monitor campus health metrics in real-time, and ensure equitable resource distribution while respecting the unique culture of each school community.",
+        badge: "District-Wide Control",
     },
     {
         id: 3,
         state: "hr",
-        headline: "Future-Ready Workforce",
-        body: "Empower counselors with tools to increase support reach. Implement 'jobs available at graduation' tools and college-to-career maps that help students plan for success in their future education and career paths.",
-        badge: "Career Pathways",
+        headline: "High-Performance Workforce",
+        body: "Build and retain a world-class educational team. Track certification compliance, analyze teacher retention trends, and identify professional development needs. Empower your HR team to make data-backed hiring decisions that elevate educational outcomes.",
+        badge: "Talent Management",
     },
     {
         id: 4,
         state: "analytics",
-        headline: "Data-Driven Decision Intelligence",
-        body: "Move beyond educated guesses. Utilize simulations, heat maps, and ranking tools to understand student learning deeply. Get just-in-time feedback to strategically adjust instruction and meet the needs of diverse learners.",
-        badge: "Smart Analytics",
+        headline: "Predictive Decision Intelligence",
+        body: "Move from reactive to proactive management. Leverage AI-driven analytics to forecast enrollment trends, predict student performance outcomes, and intervene early. Turn complex data sets into clear, strategic narratives for stakeholders and board meetings.",
+        badge: "Future-Ready Insights",
     },
 ]
 
@@ -85,16 +84,15 @@ export default function AdminScrollytelling() {
     return (
         <div ref={containerRef} className="relative border-t border-border bg-transparent-gradient">
             {/* Section Header */}
-            <div className="px-6 py-20 text-center">
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm text-primary backdrop-blur-sm">
-                    For School Administrators
+            <div className="px-6 py-24 text-center">
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary backdrop-blur-sm">
+                    For District Leaders
                 </div>
-                <h2 className="mb-4 text-balance font-sans text-4xl font-bold tracking-tight text-foreground md:text-5xl">
-                    Command Your District with Confidence
+                <h2 className="mb-6 text-balance font-sans text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
+                    Command Your District with <span className="text-primary">Confidence</span>
                 </h2>
-                <p className="mx-auto max-w-2xl text-pretty text-lg text-muted-foreground">
-                    Purpose-built tools for superintendents, principals, and district leaders managing complex educational
-                    organizations
+                <p className="mx-auto max-w-3xl text-pretty text-lg text-muted-foreground md:text-xl">
+                    A comprehensive command center designed for superintendents and administrators to drive operational excellence and educational equity.
                 </p>
             </div>
 
@@ -102,8 +100,9 @@ export default function AdminScrollytelling() {
             <div className="flex flex-col lg:flex-row">
                 {/* Left Column - Sticky Dashboard */}
                 <div className="relative w-full lg:w-7/12">
-                    <div className="sticky top-0 flex min-h-screen items-center justify-center px-6 py-20">
-                        <div className="w-full max-w-5xl">
+                    {/* Adjusted sticky positioning to account for navbar and prevent cutoff */}
+                    <div className="sticky top-24 flex h-[calc(100vh-6rem)] items-center justify-center px-6 py-12 lg:py-0">
+                        <div className="w-full max-w-[900px]">
                             <AdminDashboard activeState={dashboardState} />
                         </div>
                     </div>
@@ -111,26 +110,31 @@ export default function AdminScrollytelling() {
 
                 {/* Right Column - Text Content */}
                 <div className="w-full lg:w-5/12 lg:pl-8">
-                    <div className="space-y-4 py-20">
+                    <div className="space-y-0 pb-24">
                         {sections.map((section, index) => (
                             <div
                                 key={section.id}
                                 ref={(el) => {
                                     sectionRefs.current[index] = el
                                 }}
-                                className="min-h-[80vh] px-6 py-12 transition-all duration-700 ease-out lg:px-12 flex items-center"
+                                className="flex min-h-[80vh] items-center px-6 py-12 transition-all duration-700 ease-out lg:px-12"
                                 style={{
                                     opacity: activeSection === index ? 1 : 0.3,
-                                    filter: activeSection === index ? "blur(0px)" : "blur(1px)",
-                                    transform: activeSection === index ? "scale(1)" : "scale(0.98)",
+                                    filter: activeSection === index ? "blur(0px)" : "blur(2px)",
+                                    transform: activeSection === index ? "translateY(0)" : "translateY(10px)",
                                 }}
                             >
-                                <SkeletonCard
-                                    badge={section.badge}
-                                    title={section.headline}
-                                    description={section.body}
-                                    className="w-full max-w-lg"
-                                />
+                                <div className="w-full max-w-lg">
+                                    <div className="mb-4 inline-flex items-center rounded-md border border-border bg-background/50 px-2.5 py-0.5 text-xs font-semibold text-foreground backdrop-blur-md">
+                                        {section.badge}
+                                    </div>
+                                    <h3 className="mb-4 text-3xl font-bold leading-tight text-foreground">
+                                        {section.headline}
+                                    </h3>
+                                    <p className="text-lg leading-relaxed text-muted-foreground">
+                                        {section.body}
+                                    </p>
+                                </div>
                             </div>
                         ))}
                     </div>
