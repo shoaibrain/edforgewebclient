@@ -22,7 +22,7 @@ export interface School extends BaseEntity {
   schoolName: string;
   schoolCode: string;
   schoolType: 'elementary' | 'middle' | 'high' | 'k12' | 'alternative' | 'special';
-  
+
   contactInfo: {
     primaryEmail: string;
     primaryPhone: string;
@@ -30,7 +30,7 @@ export interface School extends BaseEntity {
     website?: string;
     fax?: string;
   };
-  
+
   address: {
     street: string;
     city: string;
@@ -41,26 +41,26 @@ export interface School extends BaseEntity {
     longitude?: number;
     timezone: string;
   };
-  
+
   principalUserId?: string;
   vicePrincipalUserIds?: string[];
   administrativeStaffCount?: number;
-  
+
   maxStudentCapacity: number;
   currentEnrollment?: number;
   gradeRange: {
     lowestGrade: string;
     highestGrade: string;
   };
-  
+
   status: 'active' | 'inactive' | 'suspended' | 'closed' | 'planned';
   statusReason?: string;
-  
+
   accreditationInfo?: {
     accreditedBy: string[];
     accreditationExpiry?: string;
   };
-  
+
   foundedDate?: string;
   description?: string;
   motto?: string;
@@ -75,20 +75,20 @@ export interface AcademicYear extends BaseEntity {
   academicYearId: string;
   yearName: string; // Display name: "2024-2025"
   yearCode: string; // Short code: "AY24"
-  
+
   startDate: string; // ISO 8601 date
   endDate: string;
-  
+
   status: 'planned' | 'active' | 'completed' | 'archived';
   isCurrent: boolean;
-  
+
   structure: {
     semesterCount: number;
     gradingPeriodCount: number;
     instructionalDays: number;
     schoolDays: number;
   };
-  
+
   tuitionRates?: {
     [gradeLevel: string]: {
       amount: number;
@@ -96,7 +96,7 @@ export interface AcademicYear extends BaseEntity {
       frequency: 'annual' | 'semester' | 'monthly';
     };
   };
-  
+
   enrollmentTargets?: {
     total: number;
     byGrade: { [grade: string]: number };
@@ -113,16 +113,16 @@ export interface GradingPeriod extends BaseEntity {
   periodName: string;
   periodCode: string;
   periodNumber: number;
-  
+
   startDate: string;
   endDate: string;
-  
+
   status: 'planned' | 'active' | 'completed';
   isCurrent: boolean;
-  
+
   gradeEntryDeadline?: string; // Note: This is gradesDueDate in DTO, but gradeEntryDeadline in entity
   reportCardDate?: string;
-  
+
   instructionalDays?: number;
 }
 
@@ -135,10 +135,10 @@ export interface Holiday extends BaseEntity {
   holidayId: string;
   holidayName: string;
   holidayType: 'national' | 'regional' | 'school' | 'religious' | 'cultural';
-  
+
   startDate: string;
   endDate: string;
-  
+
   isRecurring: boolean;
   recurrencePattern?: string;
   appliesToGradeLevels?: string[]; // If null, applies to all grades
@@ -153,22 +153,22 @@ export interface Department extends BaseEntity {
   departmentName: string;
   departmentCode: string;
   category: 'academic' | 'administrative' | 'support' | 'athletic';
-  
+
   headOfDepartmentUserId?: string;
   assistantHeadUserId?: string;
-  
+
   academicScope: {
     gradeLevels: string[];
     subjects: string[];
     curriculumStandards: string[];
   };
-  
+
   staffing: {
     allocatedPositions: number;
     filledPositions: number;
     vacantPositions: number;
   };
-  
+
   resources?: {
     facilities: Array<{
       type: 'lab' | 'office' | 'classroom' | 'storage';
@@ -180,7 +180,7 @@ export interface Department extends BaseEntity {
       description: string;
     }>;
   };
-  
+
   status: 'active' | 'inactive' | 'dissolved';
 }
 
@@ -188,27 +188,57 @@ export interface Department extends BaseEntity {
  * Response Types for List Operations
  */
 export interface SchoolListResponse {
-  schools: School[];
+  items: School[];
+  pagination?: {
+    limit: number;
+    hasMore: boolean;
+    itemCount: number;
+  };
+  schools?: School[]; // Keep for backward compatibility if needed, or remove if sure
   total?: number;
 }
 
 export interface DepartmentListResponse {
-  departments: Department[];
+  items: Department[];
+  pagination?: {
+    limit: number;
+    hasMore: boolean;
+    itemCount: number;
+  };
+  departments?: Department[];
   total?: number;
 }
 
 export interface AcademicYearListResponse {
-  academicYears: AcademicYear[];
+  items: AcademicYear[];
+  pagination?: {
+    limit: number;
+    hasMore: boolean;
+    itemCount: number;
+  };
+  academicYears?: AcademicYear[];
   total?: number;
 }
 
 export interface GradingPeriodListResponse {
-  gradingPeriods: GradingPeriod[];
+  items: GradingPeriod[];
+  pagination?: {
+    limit: number;
+    hasMore: boolean;
+    itemCount: number;
+  };
+  gradingPeriods?: GradingPeriod[];
   total?: number;
 }
 
 export interface HolidayListResponse {
-  holidays: Holiday[];
+  items: Holiday[];
+  pagination?: {
+    limit: number;
+    hasMore: boolean;
+    itemCount: number;
+  };
+  holidays?: Holiday[];
   total?: number;
 }
 

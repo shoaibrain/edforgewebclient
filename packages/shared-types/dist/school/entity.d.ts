@@ -158,23 +158,53 @@ export interface Department extends BaseEntity {
  * Response Types for List Operations
  */
 export interface SchoolListResponse {
-    schools: School[];
+    items: School[];
+    pagination?: {
+        limit: number;
+        hasMore: boolean;
+        itemCount: number;
+    };
+    schools?: School[];
     total?: number;
 }
 export interface DepartmentListResponse {
-    departments: Department[];
+    items: Department[];
+    pagination?: {
+        limit: number;
+        hasMore: boolean;
+        itemCount: number;
+    };
+    departments?: Department[];
     total?: number;
 }
 export interface AcademicYearListResponse {
-    academicYears: AcademicYear[];
+    items: AcademicYear[];
+    pagination?: {
+        limit: number;
+        hasMore: boolean;
+        itemCount: number;
+    };
+    academicYears?: AcademicYear[];
     total?: number;
 }
 export interface GradingPeriodListResponse {
-    gradingPeriods: GradingPeriod[];
+    items: GradingPeriod[];
+    pagination?: {
+        limit: number;
+        hasMore: boolean;
+        itemCount: number;
+    };
+    gradingPeriods?: GradingPeriod[];
     total?: number;
 }
 export interface HolidayListResponse {
-    holidays: Holiday[];
+    items: Holiday[];
+    pagination?: {
+        limit: number;
+        hasMore: boolean;
+        itemCount: number;
+    };
+    holidays?: Holiday[];
     total?: number;
 }
 //# sourceMappingURL=entity.d.ts.map

@@ -45,11 +45,18 @@ import type {
 export async function getSchoolsAction(): Promise<School[]> {
   try {
     const response = await serverApiClient.get<School[] | SchoolListResponse>('/schools');
-    
+    console.log(JSON.stringify(response, null, 2));
+
     if (Array.isArray(response)) {
       return response as School[];
     }
-    
+
+    // Handle paginated response (standard format)
+    if ((response as any).items) {
+      return (response as any).items as School[];
+    }
+
+    // Handle legacy/alternative format
     return (response as SchoolListResponse).schools || [];
   } catch (error) {
     console.error('[School Actions] Error fetching schools:', error);
@@ -147,11 +154,15 @@ export async function getDepartmentsAction(schoolId: string): Promise<Department
     const response = await serverApiClient.get<Department[] | DepartmentListResponse>(
       `/schools/${schoolId}/departments`
     );
-    
+
     if (Array.isArray(response)) {
       return response;
     }
-    
+
+    if ((response as any).items) {
+      return (response as any).items as Department[];
+    }
+
     return (response as DepartmentListResponse).departments || [];
   } catch (error) {
     console.error('[School Actions] Error fetching departments:', error);
@@ -248,11 +259,15 @@ export async function getAcademicYearsAction(schoolId: string): Promise<Academic
     const response = await serverApiClient.get<AcademicYear[] | AcademicYearListResponse>(
       `/schools/${schoolId}/academic-years`
     );
-    
+
     if (Array.isArray(response)) {
       return response;
     }
-    
+
+    if ((response as any).items) {
+      return (response as any).items as AcademicYear[];
+    }
+
     return (response as AcademicYearListResponse).academicYears || [];
   } catch (error) {
     console.error('[School Actions] Error fetching academic years:', error);
@@ -352,11 +367,15 @@ export async function getGradingPeriodsAction(
     const response = await serverApiClient.get<GradingPeriod[] | GradingPeriodListResponse>(
       `/schools/${schoolId}/academic-years/${academicYearId}/grading-periods`
     );
-    
+
     if (Array.isArray(response)) {
       return response;
     }
-    
+
+    if ((response as any).items) {
+      return (response as any).items as GradingPeriod[];
+    }
+
     return (response as GradingPeriodListResponse).gradingPeriods || [];
   } catch (error) {
     console.error('[School Actions] Error fetching grading periods:', error);
@@ -404,11 +423,15 @@ export async function getHolidaysAction(
     const response = await serverApiClient.get<Holiday[] | HolidayListResponse>(
       `/schools/${schoolId}/academic-years/${academicYearId}/holidays`
     );
-    
+
     if (Array.isArray(response)) {
       return response;
     }
-    
+
+    if ((response as any).items) {
+      return (response as any).items as Holiday[];
+    }
+
     return (response as HolidayListResponse).holidays || [];
   } catch (error) {
     console.error('[School Actions] Error fetching holidays:', error);
