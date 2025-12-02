@@ -51,7 +51,7 @@ export function AppSidebar({ user, schools: propSchools = [], currentSchool: pro
 	// Use SchoolContext as primary source, props as fallback
 	// This ensures sidebar updates when school changes via URL
 	const { currentSchool: contextSchool, schools: contextSchools } = useSchool();
-	
+
 	// Prioritize context over props (context is updated from URL)
 	const currentSchool = contextSchool || propCurrentSchool;
 	const schools = contextSchools.length > 0 ? contextSchools : propSchools;
@@ -64,21 +64,21 @@ export function AppSidebar({ user, schools: propSchools = [], currentSchool: pro
 					<SidebarMenuItem>
 						{/* Multiple Schools: Show switcher */}
 						{schools.length > 1 ? (
-							<SchoolSwitcher 
+							<SchoolSwitcher
 								currentSchool={currentSchool}
 								schools={schools}
 							/>
 						) : /* Single School: Show name + create button */
-						schools.length === 1 && currentSchool ? (
-							<SchoolSelectorSingle school={currentSchool} />
-						) : /* No Schools: Show empty state */
-						(
-							<SchoolEmptyState />
-						)}
+							schools.length === 1 && currentSchool ? (
+								<SchoolSelectorSingle school={currentSchool} />
+							) : /* No Schools: Show empty state */
+								(
+									<SchoolEmptyState />
+								)}
 					</SidebarMenuItem>
 					{/* User Role Display */}
 					<SidebarMenuItem>
-						<div className="px-2 py-1.5">
+						<div className="px-2 py-1.5 group-data-[collapsible=icon]:hidden">
 							<div className="text-xs text-muted-foreground">
 								{getRoleDisplayName(user.role)}
 							</div>

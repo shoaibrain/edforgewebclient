@@ -74,10 +74,10 @@ export function TermsSettings({ school, academicYears }: TermsSettingsProps) {
 	const formatDate = (dateString: string): string => {
 		try {
 			const date = new Date(dateString);
-			return date.toLocaleDateString("en-US", { 
-				month: "short", 
-				day: "numeric", 
-				year: "numeric" 
+			return date.toLocaleDateString("en-US", {
+				month: "short",
+				day: "numeric",
+				year: "numeric"
 			});
 		} catch {
 			return dateString;
@@ -117,16 +117,16 @@ export function TermsSettings({ school, academicYears }: TermsSettingsProps) {
 	const selectedYear = academicYears.find(y => y.academicYearId === selectedYearId);
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-6 max-w-5xl mx-auto">
 			<div className="flex items-center justify-between">
 				<div>
-					<h2 className="text-2xl font-semibold text-foreground">Terms & Semesters</h2>
+					<h2 className="text-xl font-semibold text-foreground">Terms & Semesters</h2>
 					<p className="text-sm text-muted-foreground mt-1">
 						Configure academic terms (grading periods) within school years
 					</p>
 				</div>
-				<Button 
-					className="bg-primary hover:bg-primary/90"
+				<Button
+					className="bg-primary hover:bg-primary/90 shadow-sm"
 					disabled={!selectedYearId}
 					onClick={() => setShowCreateDialog(true)}
 				>
@@ -136,48 +136,60 @@ export function TermsSettings({ school, academicYears }: TermsSettingsProps) {
 			</div>
 
 			{error && (
-				<div className="rounded-md bg-destructive/15 border border-destructive/50 p-4 flex items-center gap-2">
+				<div className="rounded-md bg-destructive/15 border border-destructive/50 p-4 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
 					<AlertCircle className="h-5 w-5 text-destructive" />
 					<p className="text-sm text-destructive">{error}</p>
 				</div>
 			)}
 
-			<Card className="p-4 bg-card border-border">
-				<div className="flex items-center gap-2">
-					<span className="text-sm text-muted-foreground">School Year:</span>
-					<Select
-						value={selectedYearId || ""}
-						// @ts-ignore
-						onValueChange={(value) => setSelectedYearId(value)}
-					>
-						<SelectTrigger className="w-[200px]">
-							<SelectValue placeholder="Select academic year" />
-						</SelectTrigger>
-						<SelectContent>
-							{academicYears.map((year) => (
-								<SelectItem key={year.academicYearId} value={year.academicYearId}>
-									{year.yearName} {year.isCurrent && "(Current)"}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
+			<Card className="p-4 bg-card border-border shadow-sm">
+				<div className="flex items-center gap-4">
+					<div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+						<Calendar className="h-5 w-5 text-primary" />
+					</div>
+					<div className="flex-1">
+						<label className="text-sm font-medium text-muted-foreground mb-1.5 block">
+							Select Academic Year
+						</label>
+						<Select
+							value={selectedYearId || ""}
+							// @ts-ignore
+							onValueChange={(value) => setSelectedYearId(value)}
+						>
+							<SelectTrigger className="w-full sm:w-[300px] h-10 bg-background/50">
+								<SelectValue placeholder="Select academic year" />
+							</SelectTrigger>
+							<SelectContent>
+								{academicYears.map((year) => (
+									<SelectItem key={year.academicYearId} value={year.academicYearId}>
+										{year.yearName} {year.isCurrent && "(Current)"}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
 				</div>
 			</Card>
 
 			{isLoading ? (
-				<div className="flex items-center justify-center p-12">
-					<Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+				<div className="flex flex-col items-center justify-center p-12 gap-3">
+					<Loader2 className="h-8 w-8 animate-spin text-primary" />
+					<p className="text-sm text-muted-foreground">Loading grading periods...</p>
 				</div>
 			) : gradingPeriods.length === 0 ? (
-				<Card className="p-12 text-center border-2 border-dashed">
-					<div className="flex flex-col items-center gap-2">
-						<Calendar className="h-12 w-12 text-muted-foreground" />
-						<p className="text-sm text-muted-foreground">
-							No grading periods found for {selectedYear?.yearName || "selected year"}
-						</p>
-						<Button 
-							variant="outline" 
-							size="sm" 
+				<Card className="p-12 text-center border-2 border-dashed border-muted-foreground/25 bg-muted/5">
+					<div className="flex flex-col items-center gap-3">
+						<div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
+							<Calendar className="h-6 w-6 text-muted-foreground" />
+						</div>
+						<div className="space-y-1">
+							<h3 className="font-medium text-foreground">No grading periods found</h3>
+							<p className="text-sm text-muted-foreground">
+								No terms configured for {selectedYear?.yearName || "selected year"}
+							</p>
+						</div>
+						<Button
+							variant="outline"
 							className="mt-4"
 							onClick={() => setShowCreateDialog(true)}
 						>
@@ -188,70 +200,100 @@ export function TermsSettings({ school, academicYears }: TermsSettingsProps) {
 				</Card>
 			) : (
 				<div className="grid gap-4">
-					{gradingPeriods.map((period) => (
-						<Card key={period.gradingPeriodId} className="p-6 bg-card border-border">
-							<div className="flex items-start justify-between">
-								<div className="space-y-3 flex-1">
-									<div className="flex items-center gap-3">
-										<h3 className="text-lg font-semibold text-foreground">
-											{period.periodName}
-										</h3>
-										<Badge variant="outline" className={getStatusColor(period.status)}>
-											{getStatusLabel(period)}
-										</Badge>
-										{period.periodCode && (
-											<Badge variant="outline" className="text-xs">
-												{period.periodCode}
-											</Badge>
-										)}
-									</div>
+					{gradingPeriods.map((period) => {
+						const isActive = period.status === "active";
+						return (
+							<Card
+								key={period.gradingPeriodId}
+								className={`
+									relative overflow-hidden transition-all duration-200
+									${isActive
+										? "bg-primary/5 border-primary/20 shadow-sm"
+										: "bg-card border-border hover:border-primary/20 hover:shadow-sm"
+									}
+								`}
+							>
+								{isActive && (
+									<div className="absolute left-0 top-0 bottom-0 w-1 bg-primary" />
+								)}
 
-									<div className="flex items-center gap-2 text-sm text-muted-foreground">
-										<Calendar className="h-4 w-4" />
-										<span>
-											{formatDate(period.startDate)} - {formatDate(period.endDate)}
-										</span>
-									</div>
+								<div className="p-6 flex items-start justify-between gap-4">
+									<div className="flex-1 space-y-4">
+										<div className="flex items-start justify-between">
+											<div className="space-y-1">
+												<div className="flex items-center gap-3 flex-wrap">
+													<h3 className="text-lg font-semibold text-foreground">
+														{period.periodName}
+													</h3>
+													<Badge
+														variant={isActive ? "default" : "secondary"}
+														className={isActive ? "bg-primary/10 text-primary hover:bg-primary/20 border-primary/20" : ""}
+													>
+														{getStatusLabel(period)}
+													</Badge>
+													{period.periodCode && (
+														<Badge variant="outline" className="font-mono text-xs">
+															{period.periodCode}
+														</Badge>
+													)}
+												</div>
+												<div className="flex items-center gap-2 text-sm text-muted-foreground">
+													<Calendar className="h-4 w-4" />
+													<span>
+														{formatDate(period.startDate)} - {formatDate(period.endDate)}
+													</span>
+													<span className="text-muted-foreground/50">•</span>
+													<span>
+														{calculateDays(period.startDate, period.endDate)} days
+													</span>
+												</div>
+											</div>
 
-									<div className="flex items-center gap-4 pt-2">
-										<div className="text-sm">
-											<span className="text-muted-foreground">Duration: </span>
-											<span className="text-foreground font-medium">
-												{calculateDays(period.startDate, period.endDate)} days
-											</span>
+											<Button
+												variant="ghost"
+												size="icon"
+												className="h-8 w-8 text-muted-foreground hover:text-foreground"
+												onClick={() => {
+													console.log("Edit grading period - coming soon");
+												}}
+											>
+												<Edit2 className="h-4 w-4" />
+											</Button>
 										</div>
-										{period.gradeEntryDeadline && (
-											<div className="text-sm">
-												<span className="text-muted-foreground">Grades Due: </span>
-												<span className="text-foreground font-medium">
-													{formatDate(period.gradeEntryDeadline)}
-												</span>
-											</div>
-										)}
-										{period.reportCardDate && (
-											<div className="text-sm">
-												<span className="text-muted-foreground">Report Card: </span>
-												<span className="text-foreground font-medium">
-													{formatDate(period.reportCardDate)}
-												</span>
-											</div>
-										)}
+
+										<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+											{period.gradeEntryDeadline && (
+												<div className="flex items-center gap-3 p-3 rounded-lg bg-background/50 border border-border/50">
+													<div className="h-8 w-8 rounded-full bg-orange-500/10 flex items-center justify-center shrink-0">
+														<AlertCircle className="h-4 w-4 text-orange-600" />
+													</div>
+													<div>
+														<p className="text-xs text-muted-foreground">Grades Due</p>
+														<p className="text-sm font-medium text-foreground">
+															{formatDate(period.gradeEntryDeadline)}
+														</p>
+													</div>
+												</div>
+											)}
+											{period.reportCardDate && (
+												<div className="flex items-center gap-3 p-3 rounded-lg bg-background/50 border border-border/50">
+													<div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
+														<Calendar className="h-4 w-4 text-blue-600" />
+													</div>
+													<div>
+														<p className="text-xs text-muted-foreground">Report Cards</p>
+														<p className="text-sm font-medium text-foreground">
+															{formatDate(period.reportCardDate)}
+														</p>
+													</div>
+												</div>
+											)}
+										</div>
 									</div>
 								</div>
-
-								<Button 
-									variant="ghost" 
-									size="sm"
-									onClick={() => {
-										// TODO: Open edit dialog in Phase 5
-										console.log("Edit grading period - coming soon");
-									}}
-								>
-									<Edit2 className="h-4 w-4" />
-								</Button>
-							</div>
-						</Card>
-					))}
+							</Card>
+						);
+					})}
 				</div>
 			)}
 

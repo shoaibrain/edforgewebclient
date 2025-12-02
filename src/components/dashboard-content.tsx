@@ -7,17 +7,20 @@
 
 import type { User } from "@/types/rbac";
 import { UserRole } from "@/types/rbac";
+import type { School } from "@/types/school";
+import { SchoolCard } from "@/app/dashboard/admin/settings/_components/school-card";
 
 interface DashboardContentProps {
 	user: User;
+	schools?: School[];
 }
 
-export function DashboardContent({ user }: DashboardContentProps) {
+export function DashboardContent({ user, schools = [] }: DashboardContentProps) {
 
 	return (
 		<div className="flex flex-1 flex-col gap-6 p-6 w-full">
 			{/* Role-Specific Dashboard Content */}
-			{user.role === UserRole.TENANT_ADMIN && <TenantAdminDashboard />}
+			{user.role === UserRole.TENANT_ADMIN && <TenantAdminDashboard schools={schools} />}
 			{user.role === UserRole.PRINCIPAL && <PrincipalDashboard />}
 			{user.role === UserRole.TEACHER && <TeacherDashboard />}
 			{user.role === UserRole.STUDENT && <StudentDashboard />}
@@ -45,9 +48,19 @@ import {
 // Tenant Admin Dashboard
 // ============================================
 
-function TenantAdminDashboard() {
+function TenantAdminDashboard({ schools }: { schools: School[] }) {
 	return (
 		<>
+			{/* School Cards Section */}
+			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+				{schools.map((school) => (
+					<SchoolCard
+						key={school.schoolId}
+						school={school}
+						isActive={false} // Dashboard view doesn't need active state highlighting
+					/>
+				))}
+			</div>
 			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 				<MetricCard
 					title="Total Students"
@@ -444,13 +457,12 @@ function MetricCard({
 				<p className="text-3xl font-bold">{value}</p>
 				{change && (
 					<p
-						className={`text-sm ${
-							trend === "up"
-								? "text-success"
-								: trend === "down"
-									? "text-error"
-									: "text-muted-foreground"
-						}`}
+						className={`text-sm ${trend === "up"
+							? "text-success"
+							: trend === "down"
+								? "text-error"
+								: "text-muted-foreground"
+							}`}
 					>
 						{change}
 					</p>
@@ -594,7 +606,7 @@ function ChildCard({
 			<div className="flex items-center justify-between">
 				<span className="text-sm text-muted-foreground">GPA</span>
 				<span className="text-lg font-bold text-primary">{gpa}</span>
-          </div>
-        </div>
+			</div>
+		</div>
 	);
 }

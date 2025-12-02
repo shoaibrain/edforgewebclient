@@ -6,7 +6,7 @@
  */
 export const dynamic = 'force-dynamic'
 import { getCurrentUser } from "@/lib/auth";
-import { StaffProfileDetail } from "./_components/staff-profile-detail";
+import { StaffProfileContent } from "./_components/staff-profile-content";
 
 interface StaffDetailsPageProps {
 	params: Promise<{
@@ -17,7 +17,7 @@ interface StaffDetailsPageProps {
 export default async function StaffDetailsPage({ params }: StaffDetailsPageProps) {
 	// Server-side authentication and authorization
 	const user = await getCurrentUser();
-	
+
 	if (!user) {
 		return (
 			<div className="flex h-screen items-center justify-center">
@@ -50,7 +50,7 @@ export default async function StaffDetailsPage({ params }: StaffDetailsPageProps
 		effectivenessScore: 92.5,
 		yearsOfService: 4,
 		attendanceRate: 98.5,
-		
+
 		// Enhanced assignments with comprehensive metrics
 		assignments: [
 			{
@@ -149,7 +149,7 @@ export default async function StaffDetailsPage({ params }: StaffDetailsPageProps
 				gradeTrend: [86.8, 88.9, 90.2, 91.5],
 			},
 		],
-		
+
 		// Enhanced TSDL data with 12+ months of trends
 		tsdlData: {
 			averageStudentGrowth: 9.5,
@@ -241,7 +241,7 @@ export default async function StaffDetailsPage({ params }: StaffDetailsPageProps
 				activeDiscussion: 87.5,
 			},
 		},
-		
+
 		// Enhanced performance metrics with breakdowns
 		performanceMetrics: {
 			teachingEffectiveness: 92.5,
@@ -335,7 +335,7 @@ export default async function StaffDetailsPage({ params }: StaffDetailsPageProps
 				},
 			},
 		},
-		
+
 		resultsMetrics: {
 			studentAchievement: {
 				passRate: 94.2,
@@ -353,7 +353,7 @@ export default async function StaffDetailsPage({ params }: StaffDetailsPageProps
 				averageImprovement: 8.2,
 			},
 		},
-		
+
 		// Enhanced qualifications
 		qualifications: {
 			education: [
@@ -406,7 +406,7 @@ export default async function StaffDetailsPage({ params }: StaffDetailsPageProps
 			specializations: ["Algebra", "Calculus", "Geometry", "Statistics"],
 			languages: ["English (Native)", "Spanish (Conversational)"],
 		},
-		
+
 		// Enhanced professional development
 		professionalDevelopment: [
 			{
@@ -455,12 +455,12 @@ export default async function StaffDetailsPage({ params }: StaffDetailsPageProps
 				recommendations: ["Advanced Classroom Management", "Student Motivation Mastery"],
 			},
 		],
-		
+
 		incentives: [
 			{ type: "Performance Bonus", amount: 2500, date: "2024-06-30", reason: "Excellence in Teaching" },
 			{ type: "Award", title: "Teacher of the Year", date: "2023-12-15", description: "Recognized for outstanding student outcomes and engagement" },
 		],
-		
+
 		// New sections
 		classPerformanceBreakdown: [
 			{
@@ -475,14 +475,14 @@ export default async function StaffDetailsPage({ params }: StaffDetailsPageProps
 			},
 			// ... other classes
 		],
-		
+
 		studentOutcomesCorrelation: {
 			teacherAttendanceToStudentAttendance: 0.89,
 			professionalDevelopmentToOutcomes: 0.72,
 			classSizeToPerformance: -0.45, // Negative correlation (smaller is better)
 			engagementStrategiesToEngagement: 0.81,
 		},
-		
+
 		professionalGrowth: {
 			careerProgression: [
 				{ position: "Teacher", startDate: "2020-08-15", endDate: null },
@@ -500,8 +500,6 @@ export default async function StaffDetailsPage({ params }: StaffDetailsPageProps
 	};
 
 	return (
-		<div className="flex flex-1 flex-col gap-6 p-6 w-full">
-			<StaffProfileDetail data={staffData} />
-		</div>
+		<StaffProfileContent staff={staffData} />
 	);
 }

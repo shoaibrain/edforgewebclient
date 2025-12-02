@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, Save, CheckCircle, AlertCircle } from "lucide-react";
+import { Upload, Save, CheckCircle, AlertCircle, Building2, MapPin, Phone, Mail, Globe, Award, Target } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
 	Select,
@@ -133,24 +133,24 @@ export function GeneralSettings({ school, onSchoolUpdate }: GeneralSettingsProps
 			}
 
 			const updatedSchool = await updateSchoolAction(currentSchool.schoolId, updateData);
-			
+
 			// Immediately update local state with returned school data (including new version)
 			setCurrentSchool(updatedSchool);
 			if (onSchoolUpdate) {
 				onSchoolUpdate(updatedSchool);
 			}
-			
+
 			setSaveStatus("saved");
 			setTimeout(() => setSaveStatus("idle"), 3000);
-			
+
 			// Refresh the page data (async, but state is already updated)
 			router.refresh();
 		} catch (err: any) {
 			console.error("[GeneralSettings] Error updating school:", err);
-			
+
 			// Check if it's a conflict error (409) and retry with fresh data
 			const isConflict = axios.isAxiosError(err) && err.response?.status === HttpStatus.CONFLICT;
-			
+
 			if (isConflict && retryCount < 2) {
 				// Fetch fresh school data and retry
 				try {
@@ -179,263 +179,303 @@ export function GeneralSettings({ school, onSchoolUpdate }: GeneralSettingsProps
 	};
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-8 max-w-5xl mx-auto">
 			{error && (
-				<div className="rounded-md bg-destructive/15 border border-destructive/50 p-4 flex items-center gap-2">
+				<div className="rounded-md bg-destructive/15 border border-destructive/50 p-4 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
 					<AlertCircle className="h-5 w-5 text-destructive" />
 					<p className="text-sm text-destructive">{error}</p>
 				</div>
 			)}
 
 			{/* Institution Identity */}
-			<Card className="p-6 bg-card border-border">
-				<div className="mb-6">
-					<h2 className="text-xl font-semibold text-foreground">Institution Identity</h2>
-					<p className="text-sm text-muted-foreground mt-1">
-						Basic information about your educational institution
-					</p>
+			<section className="space-y-4">
+				<div className="flex items-center gap-2 border-b pb-2">
+					<Building2 className="h-5 w-5 text-primary" />
+					<h2 className="text-lg font-semibold tracking-tight">Institution Identity</h2>
 				</div>
 
-				<div className="space-y-6">
-					<div className="flex items-start gap-6">
-						<div className="shrink-0">
-							{currentSchool.logoUrl ? (
-								<img
-									src={currentSchool.logoUrl}
-									alt={`${currentSchool.schoolName} logo`}
-									className="h-24 w-24 rounded-lg object-cover border-2 border-border"
-								/>
-							) : (
-								<div className="h-24 w-24 rounded-lg bg-primary/10 border-2 border-dashed border-primary/30 flex items-center justify-center">
-									<Upload className="h-8 w-8 text-primary" />
+				<Card className="p-6 border-border/60 shadow-sm hover:shadow-md transition-shadow duration-200">
+					<div className="flex flex-col md:flex-row gap-8">
+						{/* Logo Upload Section */}
+						<div className="flex flex-col items-center gap-3 shrink-0">
+							<div className="relative group cursor-pointer">
+								{currentSchool.logoUrl ? (
+									<img
+										src={currentSchool.logoUrl}
+										alt={`${currentSchool.schoolName} logo`}
+										className="h-32 w-32 rounded-xl object-cover border-2 border-border shadow-sm group-hover:border-primary/50 transition-colors"
+									/>
+								) : (
+									<div className="h-32 w-32 rounded-xl bg-muted/30 border-2 border-dashed border-muted-foreground/25 flex flex-col items-center justify-center gap-2 group-hover:border-primary/50 group-hover:bg-primary/5 transition-all">
+										<Upload className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
+										<span className="text-xs text-muted-foreground font-medium">Upload Logo</span>
+									</div>
+								)}
+								<div className="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
+									<span className="text-white text-xs font-medium bg-black/50 px-2 py-1 rounded-full">Change</span>
 								</div>
-							)}
-							<Button variant="outline" size="sm" className="mt-2 w-24 bg-transparent" disabled>
-								Upload
-							</Button>
-							<p className="text-xs text-muted-foreground mt-1">Logo upload coming soon</p>
+							</div>
+							<p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Institution Logo</p>
 						</div>
 
-						<div className="flex-1 space-y-4">
-							<div>
-								<Label htmlFor="institution-name">Institution Name</Label>
+						{/* Identity Fields */}
+						<div className="flex-1 grid gap-6">
+							<div className="grid gap-2">
+								<Label htmlFor="institution-name" className="text-sm font-medium">Institution Name</Label>
 								<Input
 									id="institution-name"
 									value={formData.schoolName}
 									onChange={(e) => setFormData({ ...formData, schoolName: e.target.value })}
-									className="mt-1.5 bg-input border-border"
+									className="h-10 bg-background/50 focus:bg-background transition-colors"
+									placeholder="e.g. Springfield High School"
 								/>
 							</div>
 
-							<div>
-								<Label htmlFor="institution-code">Institution Code</Label>
-								<Input 
-									id="institution-code" 
-									value={formData.schoolCode}
-									onChange={(e) => setFormData({ ...formData, schoolCode: e.target.value })}
-									className="mt-1.5 bg-input border-border" 
-									disabled
-								/>
-								<p className="text-xs text-muted-foreground mt-1.5">
-									Unique identifier used in reports and integrations (cannot be changed)
-								</p>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<div className="grid gap-2">
+									<Label htmlFor="institution-code" className="text-sm font-medium">Institution Code</Label>
+									<div className="relative">
+										<Input
+											id="institution-code"
+											value={formData.schoolCode}
+											onChange={(e) => setFormData({ ...formData, schoolCode: e.target.value })}
+											className="h-10 bg-muted/50 font-mono text-sm pl-9"
+											disabled
+										/>
+										<div className="absolute left-3 top-2.5 text-muted-foreground">
+											<span className="text-xs font-bold">#</span>
+										</div>
+									</div>
+									<p className="text-[11px] text-muted-foreground">
+										Unique system identifier (read-only)
+									</p>
+								</div>
+
+								<div className="grid gap-2">
+									<Label htmlFor="institution-type" className="text-sm font-medium">Institution Type</Label>
+									<Select
+										value={formData.schoolType}
+										onValueChange={(value: any) => setFormData({ ...formData, schoolType: value })}
+									>
+										<SelectTrigger className="h-10 bg-background/50">
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											{SCHOOL_TYPES.map((type) => (
+												<SelectItem key={type.value} value={type.value}>
+													{type.label}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</div>
+							</div>
+
+							<div className="grid gap-2">
+								<Label htmlFor="accreditation" className="text-sm font-medium">Accreditation</Label>
+								<div className="relative">
+									<Award className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+									<Input
+										id="accreditation"
+										value={formData.accreditation}
+										onChange={(e) => setFormData({ ...formData, accreditation: e.target.value })}
+										placeholder="e.g., Regional Accreditation Board"
+										className="h-10 pl-9 bg-background/50 focus:bg-background transition-colors"
+									/>
+								</div>
 							</div>
 						</div>
 					</div>
-
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-						<div>
-							<Label htmlFor="institution-type">Institution Type</Label>
-							<Select
-								value={formData.schoolType}
-								onValueChange={(value: any) => setFormData({ ...formData, schoolType: value })}
-							>
-								<SelectTrigger className="mt-1.5">
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									{SCHOOL_TYPES.map((type) => (
-										<SelectItem key={type.value} value={type.value}>
-											{type.label}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
-
-						<div>
-							<Label htmlFor="accreditation">Accreditation</Label>
-							<Input
-								id="accreditation"
-								value={formData.accreditation}
-								onChange={(e) => setFormData({ ...formData, accreditation: e.target.value })}
-								placeholder="e.g., Regional Accreditation Board"
-								className="mt-1.5 bg-input border-border"
-							/>
-							<p className="text-xs text-muted-foreground mt-1.5">
-								Separate multiple accrediting bodies with commas
-							</p>
-						</div>
-					</div>
-				</div>
-			</Card>
+				</Card>
+			</section>
 
 			{/* Contact Information */}
-			<Card className="p-6 bg-card border-border">
-				<div className="mb-6">
-					<h2 className="text-xl font-semibold text-foreground">Contact Information</h2>
-					<p className="text-sm text-muted-foreground mt-1">
-						Primary contact details for your institution
-					</p>
+			<section className="space-y-4">
+				<div className="flex items-center gap-2 border-b pb-2">
+					<MapPin className="h-5 w-5 text-primary" />
+					<h2 className="text-lg font-semibold tracking-tight">Contact & Location</h2>
 				</div>
 
-				<div className="space-y-4">
-					<div>
-						<Label htmlFor="address">Street Address</Label>
-						<Input 
-							id="address" 
-							value={formData.street}
-							onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-							className="mt-1.5 bg-input border-border" 
-						/>
-					</div>
+				<Card className="p-6 border-border/60 shadow-sm hover:shadow-md transition-shadow duration-200">
+					<div className="grid gap-6">
+						<div className="grid gap-2">
+							<Label htmlFor="address" className="text-sm font-medium">Street Address</Label>
+							<div className="relative">
+								<MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+								<Input
+									id="address"
+									value={formData.street}
+									onChange={(e) => setFormData({ ...formData, street: e.target.value })}
+									className="h-10 pl-9 bg-background/50 focus:bg-background transition-colors"
+									placeholder="123 Education Lane"
+								/>
+							</div>
+						</div>
 
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-						<div>
-							<Label htmlFor="city">City</Label>
-							<Input 
-								id="city" 
-								value={formData.city}
-								onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-								className="mt-1.5 bg-input border-border" 
-							/>
+						<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+							<div className="grid gap-2">
+								<Label htmlFor="city" className="text-sm font-medium">City</Label>
+								<Input
+									id="city"
+									value={formData.city}
+									onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+									className="h-10 bg-background/50"
+								/>
+							</div>
+							<div className="grid gap-2">
+								<Label htmlFor="state" className="text-sm font-medium">State/Province</Label>
+								<Input
+									id="state"
+									value={formData.state}
+									onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+									className="h-10 bg-background/50"
+								/>
+							</div>
+							<div className="grid gap-2">
+								<Label htmlFor="zip" className="text-sm font-medium">ZIP/Postal Code</Label>
+								<Input
+									id="zip"
+									value={formData.postalCode}
+									onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
+									className="h-10 bg-background/50"
+								/>
+							</div>
 						</div>
-						<div>
-							<Label htmlFor="state">State/Province</Label>
-							<Input 
-								id="state" 
-								value={formData.state}
-								onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-								className="mt-1.5 bg-input border-border" 
-							/>
-						</div>
-						<div>
-							<Label htmlFor="zip">ZIP/Postal Code</Label>
-							<Input 
-								id="zip" 
-								value={formData.postalCode}
-								onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
-								className="mt-1.5 bg-input border-border" 
-							/>
-						</div>
-					</div>
 
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-						<div>
-							<Label htmlFor="phone">Phone Number</Label>
-							<Input 
-								id="phone" 
-								value={formData.primaryPhone}
-								onChange={(e) => setFormData({ ...formData, primaryPhone: e.target.value })}
-								className="mt-1.5 bg-input border-border" 
-							/>
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+							<div className="grid gap-2">
+								<Label htmlFor="phone" className="text-sm font-medium">Primary Phone</Label>
+								<div className="relative">
+									<Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+									<Input
+										id="phone"
+										value={formData.primaryPhone}
+										onChange={(e) => setFormData({ ...formData, primaryPhone: e.target.value })}
+										className="h-10 pl-9 bg-background/50"
+										placeholder="+1 (555) 000-0000"
+									/>
+								</div>
+							</div>
+							<div className="grid gap-2">
+								<Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+								<div className="relative">
+									<Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+									<Input
+										id="email"
+										type="email"
+										value={formData.primaryEmail}
+										onChange={(e) => setFormData({ ...formData, primaryEmail: e.target.value })}
+										className="h-10 pl-9 bg-background/50"
+										placeholder="admin@school.edu"
+									/>
+								</div>
+							</div>
 						</div>
-						<div>
-							<Label htmlFor="email">Email Address</Label>
-							<Input
-								id="email"
-								type="email"
-								value={formData.primaryEmail}
-								onChange={(e) => setFormData({ ...formData, primaryEmail: e.target.value })}
-								className="mt-1.5 bg-input border-border"
-							/>
-						</div>
-					</div>
 
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-						<div>
-							<Label htmlFor="secondary-phone">Secondary Phone (Optional)</Label>
-							<Input 
-								id="secondary-phone" 
-								value={formData.secondaryPhone}
-								onChange={(e) => setFormData({ ...formData, secondaryPhone: e.target.value })}
-								className="mt-1.5 bg-input border-border" 
-							/>
-						</div>
-						<div>
-							<Label htmlFor="website">Website</Label>
-							<Input 
-								id="website" 
-								type="url"
-								value={formData.website}
-								onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-								className="mt-1.5 bg-input border-border" 
-							/>
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div className="grid gap-2">
+								<Label htmlFor="secondary-phone" className="text-sm font-medium">Secondary Phone <span className="text-muted-foreground font-normal">(Optional)</span></Label>
+								<div className="relative">
+									<Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+									<Input
+										id="secondary-phone"
+										value={formData.secondaryPhone}
+										onChange={(e) => setFormData({ ...formData, secondaryPhone: e.target.value })}
+										className="h-10 pl-9 bg-background/50"
+									/>
+								</div>
+							</div>
+							<div className="grid gap-2">
+								<Label htmlFor="website" className="text-sm font-medium">Website</Label>
+								<div className="relative">
+									<Globe className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+									<Input
+										id="website"
+										type="url"
+										value={formData.website}
+										onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+										className="h-10 pl-9 bg-background/50"
+										placeholder="https://www.school.edu"
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-			</Card>
+				</Card>
+			</section>
 
 			{/* Mission & Description */}
-			<Card className="p-6 bg-card border-border">
-				<div className="mb-6">
-					<h2 className="text-xl font-semibold text-foreground">Mission & Description</h2>
-					<p className="text-sm text-muted-foreground mt-1">
-						Share your institution's mission and values
-					</p>
+			<section className="space-y-4">
+				<div className="flex items-center gap-2 border-b pb-2">
+					<Target className="h-5 w-5 text-primary" />
+					<h2 className="text-lg font-semibold tracking-tight">Mission & Description</h2>
 				</div>
 
-				<div className="space-y-4">
-					<div>
-						<Label htmlFor="motto">Mission Statement / Motto</Label>
-						<Textarea
-							id="motto"
-							rows={4}
-							value={formData.motto}
-							onChange={(e) => setFormData({ ...formData, motto: e.target.value })}
-							placeholder="Enter your institution's mission statement or motto..."
-							className="mt-1.5 bg-input border-border resize-none"
-						/>
-					</div>
+				<Card className="p-6 border-border/60 shadow-sm hover:shadow-md transition-shadow duration-200">
+					<div className="space-y-6">
+						<div className="grid gap-2">
+							<Label htmlFor="motto" className="text-sm font-medium">Mission Statement / Motto</Label>
+							<Textarea
+								id="motto"
+								rows={3}
+								value={formData.motto}
+								onChange={(e) => setFormData({ ...formData, motto: e.target.value })}
+								placeholder="Enter your institution's mission statement or motto..."
+								className="min-h-[80px] bg-background/50 resize-y focus:bg-background transition-colors"
+							/>
+						</div>
 
-					<div>
-						<Label htmlFor="description">Institution Description</Label>
-						<Textarea
-							id="description"
-							rows={3}
-							value={formData.description}
-							onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-							placeholder="Brief description of your institution..."
-							className="mt-1.5 bg-input border-border resize-none"
-						/>
+						<div className="grid gap-2">
+							<Label htmlFor="description" className="text-sm font-medium">Institution Description</Label>
+							<Textarea
+								id="description"
+								rows={4}
+								value={formData.description}
+								onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+								placeholder="Brief description of your institution..."
+								className="min-h-[100px] bg-background/50 resize-y focus:bg-background transition-colors"
+							/>
+						</div>
 					</div>
-				</div>
-			</Card>
+				</Card>
+			</section>
 
 			{/* Save Actions */}
-			<div className="flex justify-between items-center">
-				<div className="flex items-center gap-2">
+			<div className="sticky bottom-6 z-10 flex justify-end items-center gap-4 p-4 bg-background/80 backdrop-blur-md border border-border/50 rounded-xl shadow-lg">
+				<div className="flex-1 flex items-center gap-2">
 					{saveStatus === "saved" && (
-						<Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-							<CheckCircle className="h-3 w-3 mr-1" />
+						<div className="flex items-center gap-2 text-sm text-emerald-600 font-medium animate-in fade-in slide-in-from-left-2">
+							<CheckCircle className="h-4 w-4" />
 							Changes saved successfully
-						</Badge>
+						</div>
 					)}
 					{saveStatus === "error" && (
-						<Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/20">
-							<AlertCircle className="h-3 w-3 mr-1" />
-							Failed to save
-						</Badge>
+						<div className="flex items-center gap-2 text-sm text-destructive font-medium animate-in fade-in slide-in-from-left-2">
+							<AlertCircle className="h-4 w-4" />
+							Failed to save changes
+						</div>
 					)}
 				</div>
-				
-				<Button 
-					onClick={() => handleSave()} 
-					disabled={isSaving} 
-					className="bg-primary hover:bg-primary/90"
+
+				<Button variant="outline" onClick={() => router.refresh()} disabled={isSaving}>
+					Cancel
+				</Button>
+				<Button
+					onClick={() => handleSave()}
+					disabled={isSaving}
+					className="min-w-[140px] shadow-md hover:shadow-lg transition-all"
 				>
-					<Save className="h-4 w-4 mr-2" />
-					{isSaving ? "Saving..." : "Save Changes"}
+					{isSaving ? (
+						<>
+							<div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+							Saving...
+						</>
+					) : (
+						<>
+							<Save className="h-4 w-4 mr-2" />
+							Save Changes
+						</>
+					)}
 				</Button>
 			</div>
 		</div>

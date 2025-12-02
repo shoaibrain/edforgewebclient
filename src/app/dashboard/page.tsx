@@ -58,7 +58,7 @@ export default async function DashboardPage() {
 		<>
 			<DashboardSchoolRedirect />
 			<Suspense fallback={<div>Loading dashboard...</div>}>
-				<DashboardContent user={user} />
+				<DashboardContent user={user} schools={schools} />
 			</Suspense>
 		</>
 	);

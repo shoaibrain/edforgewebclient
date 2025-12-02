@@ -7,6 +7,7 @@
  */
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Building2, Calendar, CalendarDays, GraduationCap, ClipboardCheck, Award } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GeneralSettings } from "./general-settings";
@@ -58,7 +59,7 @@ function getValidTabId(tabId: string | undefined): SettingsSection {
 export function InstitutionSettingsContent({ user, school, academicYears, initialActiveTab }: InstitutionSettingsContentProps) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const [activeSection, setActiveSection] = useState<SettingsSection>(() => 
+	const [activeSection, setActiveSection] = useState<SettingsSection>(() =>
 		getValidTabId(initialActiveTab)
 	);
 	const [currentSchool, setCurrentSchool] = useState<School>(school);
@@ -87,15 +88,40 @@ export function InstitutionSettingsContent({ user, school, academicYears, initia
 		setCurrentSchool(updatedSchool);
 	};
 
-	// Handle tab change and update URL
+	const [direction, setDirection] = useState(0);
+	const [prevSection, setPrevSection] = useState<SettingsSection>(activeSection);
+
+	// Handle tab change and update URL with animation direction
 	const handleTabChange = (tabId: SettingsSection) => {
+		const newIndex = settingsTabs.findIndex(t => t.id === tabId);
+		const oldIndex = settingsTabs.findIndex(t => t.id === activeSection);
+		setDirection(newIndex > oldIndex ? 1 : -1);
+		setPrevSection(activeSection);
 		setActiveSection(tabId);
+
 		const params = new URLSearchParams(searchParams.toString());
 		params.set("activeTab", tabId);
 		router.replace(`/dashboard/admin/settings?${params.toString()}`, { scroll: false });
 	};
 
 	const activeTab = settingsTabs.find(tab => tab.id === activeSection);
+
+	const variants = {
+		enter: (direction: number) => ({
+			x: direction > 0 ? 20 : -20,
+			opacity: 0,
+		}),
+		center: {
+			zIndex: 1,
+			x: 0,
+			opacity: 1,
+		},
+		exit: (direction: number) => ({
+			zIndex: 0,
+			x: direction < 0 ? 20 : -20,
+			opacity: 0,
+		}),
+	};
 
 	return (
 		<div className="space-y-6">
@@ -104,33 +130,57 @@ export function InstitutionSettingsContent({ user, school, academicYears, initia
 				<nav className="flex gap-6 overflow-x-auto" aria-label="Settings sections">
 					{settingsTabs.map((tab) => {
 						const Icon = tab.icon;
+						const isActive = activeSection === tab.id;
 						return (
-						<button
-							key={tab.id}
-							onClick={() => handleTabChange(tab.id)}
-							className={cn(
-								"flex items-center gap-2 border-b-2 px-1 pb-4 text-sm font-medium transition-colors whitespace-nowrap",
-								activeSection === tab.id
-									? "border-primary text-primary"
-									: "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
-							)}
-						>
-							<Icon className="h-4 w-4" />
-							{tab.label}
-						</button>
+							<button
+								key={tab.id}
+								onClick={() => handleTabChange(tab.id)}
+								className={cn(
+									"relative flex items-center gap-2 px-1 pb-4 text-sm font-medium transition-colors whitespace-nowrap",
+									isActive
+										? "text-primary"
+										: "text-muted-foreground hover:text-foreground"
+								)}
+							>
+								<Icon className="h-4 w-4" />
+								{tab.label}
+								{isActive && (
+									<motion.div
+										layoutId="activeTab"
+										className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+										transition={{ type: "spring", stiffness: 500, damping: 30 }}
+									/>
+								)}
+							</button>
 						);
 					})}
 				</nav>
 			</div>
 
 			{/* Settings Content */}
-			<div className="min-h-[600px]">
-				{activeSection === "general" && <GeneralSettings school={currentSchool} onSchoolUpdate={handleSchoolUpdate} />}
-				{activeSection === "school-years" && <SchoolYearSettings school={currentSchool} academicYears={academicYears} />}
-				{activeSection === "terms" && <TermsSettings school={currentSchool} academicYears={academicYears} />}
-				{activeSection === "calendar" && <AcademicCalendar school={currentSchool} academicYears={academicYears} />}
-				{activeSection === "grading" && <GradingSettings school={currentSchool} />}
-				{activeSection === "attendance" && <AttendanceSettings school={currentSchool} />}
+			<div className="min-h-[600px] overflow-hidden relative">
+				<AnimatePresence mode="wait" initial={false} custom={direction}>
+					<motion.div
+						key={activeSection}
+						custom={direction}
+						variants={variants}
+						initial="enter"
+						animate="center"
+						exit="exit"
+						transition={{
+							x: { type: "spring", stiffness: 300, damping: 30 },
+							opacity: { duration: 0.2 }
+						}}
+						className="w-full"
+					>
+						{activeSection === "general" && <GeneralSettings school={currentSchool} onSchoolUpdate={handleSchoolUpdate} />}
+						{activeSection === "school-years" && <SchoolYearSettings school={currentSchool} academicYears={academicYears} />}
+						{activeSection === "terms" && <TermsSettings school={currentSchool} academicYears={academicYears} />}
+						{activeSection === "calendar" && <AcademicCalendar school={currentSchool} academicYears={academicYears} />}
+						{activeSection === "grading" && <GradingSettings school={currentSchool} />}
+						{activeSection === "attendance" && <AttendanceSettings school={currentSchool} />}
+					</motion.div>
+				</AnimatePresence>
 			</div>
 		</div>
 	);

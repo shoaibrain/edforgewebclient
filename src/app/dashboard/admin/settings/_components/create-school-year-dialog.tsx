@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { CheckCircle, AlertCircle, Loader2, Calendar } from "lucide-react";
 import { createAcademicYearAction } from "@/actions/school-actions";
 import type { CreateAcademicYearRequest } from "@edforge/shared-types";
 import { getUserFriendlyMessage } from "@/lib/api-errors";
@@ -96,7 +96,7 @@ export function CreateSchoolYearDialog({ open, onOpenChange, schoolId, onSuccess
 			};
 
 			await createAcademicYearAction(schoolId, yearData);
-			
+
 			// Success - close dialog and refresh
 			onOpenChange(false);
 			if (onSuccess) {
@@ -128,122 +128,128 @@ export function CreateSchoolYearDialog({ open, onOpenChange, schoolId, onSuccess
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="bg-card border-border sm:max-w-[500px]">
-				<DialogHeader>
-					<DialogTitle className="text-foreground">Create School Year</DialogTitle>
+			<DialogContent className="bg-card border-border sm:max-w-[550px] p-0 overflow-hidden gap-0">
+				<DialogHeader className="p-6 pb-4 border-b border-border/50 bg-muted/20">
+					<DialogTitle className="text-xl font-semibold text-foreground flex items-center gap-2">
+						<Calendar className="h-5 w-5 text-primary" />
+						Create School Year
+					</DialogTitle>
 					<DialogDescription className="text-muted-foreground">
 						Set up a new academic year with start and end dates
 					</DialogDescription>
 				</DialogHeader>
 
-				<div className="space-y-4 py-4">
+				<div className="p-6 space-y-6">
 					{error && (
-						<div className="rounded-md bg-destructive/15 border border-destructive/50 p-3 flex items-center gap-2">
+						<div className="rounded-md bg-destructive/15 border border-destructive/50 p-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
 							<AlertCircle className="h-4 w-4 text-destructive" />
 							<p className="text-sm text-destructive">{error}</p>
 						</div>
 					)}
 
-					<div>
-						<Label htmlFor="year-name">School Year Name *</Label>
-						<Input 
-							id="year-name" 
-							placeholder="e.g., 2025-2026" 
-							value={formData.yearName}
-							onChange={(e) => handleInputChange("yearName", e.target.value)}
-							className="mt-1.5 bg-input border-border" 
-							required
-						/>
-						<p className="text-xs text-muted-foreground mt-1">
-							Display name for the academic year
-						</p>
-					</div>
-
-					<div>
-						<Label htmlFor="year-code">Year Code *</Label>
-						<Input 
-							id="year-code" 
-							placeholder="e.g., AY25" 
-							value={formData.yearCode}
-							onChange={(e) => handleInputChange("yearCode", e.target.value)}
-							className="mt-1.5 bg-input border-border" 
-							required
-							maxLength={20}
-						/>
-						<p className="text-xs text-muted-foreground mt-1">
-							Short code for the academic year (2-20 characters)
-						</p>
-					</div>
-
-					<div className="grid grid-cols-2 gap-4">
-						<div>
-							<Label htmlFor="start-date">Start Date *</Label>
-							<Input 
-								id="start-date" 
-								type="date" 
-								value={formData.startDate}
-								onChange={(e) => handleInputChange("startDate", e.target.value)}
-								className="mt-1.5 bg-input border-border" 
+					<div className="grid gap-6">
+						<div className="grid gap-2">
+							<Label htmlFor="year-name" className="text-sm font-medium">School Year Name <span className="text-destructive">*</span></Label>
+							<Input
+								id="year-name"
+								placeholder="e.g., 2025-2026"
+								value={formData.yearName}
+								onChange={(e) => handleInputChange("yearName", e.target.value)}
+								className="h-10 bg-background/50 focus:bg-background transition-colors"
 								required
 							/>
+							<p className="text-[11px] text-muted-foreground">
+								Display name for the academic year
+							</p>
 						</div>
-						<div>
-							<Label htmlFor="end-date">End Date *</Label>
-							<Input 
-								id="end-date" 
-								type="date" 
-								value={formData.endDate}
-								onChange={(e) => handleInputChange("endDate", e.target.value)}
-								className="mt-1.5 bg-input border-border" 
+
+						<div className="grid gap-2">
+							<Label htmlFor="year-code" className="text-sm font-medium">Year Code <span className="text-destructive">*</span></Label>
+							<Input
+								id="year-code"
+								placeholder="e.g., AY25"
+								value={formData.yearCode}
+								onChange={(e) => handleInputChange("yearCode", e.target.value)}
+								className="h-10 bg-background/50 focus:bg-background transition-colors font-mono text-sm"
 								required
+								maxLength={20}
 							/>
+							<p className="text-[11px] text-muted-foreground">
+								Short code for the academic year (2-20 characters)
+							</p>
 						</div>
-					</div>
 
-					<div>
-						<Label htmlFor="grading-period-count">Number of Grading Periods</Label>
-						<select
-							id="grading-period-count"
-							value={formData.gradingPeriodCount}
-							onChange={(e) => handleInputChange("gradingPeriodCount", e.target.value)}
-							className="mt-1.5 w-full rounded-md border border-border bg-input px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-						>
-							<option value="2">2 (Semesters)</option>
-							<option value="3">3 (Trimesters)</option>
-							<option value="4">4 (Quarters)</option>
-							<option value="6">6 (Six Periods)</option>
-						</select>
-						<p className="text-xs text-muted-foreground mt-1">
-							Number of grading periods in this academic year
-						</p>
-					</div>
+						<div className="grid grid-cols-2 gap-4">
+							<div className="grid gap-2">
+								<Label htmlFor="start-date" className="text-sm font-medium">Start Date <span className="text-destructive">*</span></Label>
+								<Input
+									id="start-date"
+									type="date"
+									value={formData.startDate}
+									onChange={(e) => handleInputChange("startDate", e.target.value)}
+									className="h-10 bg-background/50 focus:bg-background transition-colors"
+									required
+								/>
+							</div>
+							<div className="grid gap-2">
+								<Label htmlFor="end-date" className="text-sm font-medium">End Date <span className="text-destructive">*</span></Label>
+								<Input
+									id="end-date"
+									type="date"
+									value={formData.endDate}
+									onChange={(e) => handleInputChange("endDate", e.target.value)}
+									className="h-10 bg-background/50 focus:bg-background transition-colors"
+									required
+								/>
+							</div>
+						</div>
 
-					<div className="flex items-center gap-2 rounded-lg bg-primary/10 border border-primary/30 p-3">
-						<input 
-							type="checkbox" 
-							id="is-current" 
-							checked={formData.isCurrent}
-							onChange={(e) => handleInputChange("isCurrent", e.target.checked)}
-							className="rounded" 
-						/>
-						<Label htmlFor="is-current" className="text-sm font-normal cursor-pointer">
-							Set as active school year immediately
-						</Label>
+						<div className="grid gap-2">
+							<Label htmlFor="grading-period-count" className="text-sm font-medium">Number of Grading Periods</Label>
+							<select
+								id="grading-period-count"
+								value={formData.gradingPeriodCount}
+								onChange={(e) => handleInputChange("gradingPeriodCount", e.target.value)}
+								className="h-10 w-full rounded-md border border-border bg-background/50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+							>
+								<option value="2">2 (Semesters)</option>
+								<option value="3">3 (Trimesters)</option>
+								<option value="4">4 (Quarters)</option>
+								<option value="6">6 (Six Periods)</option>
+							</select>
+							<p className="text-[11px] text-muted-foreground">
+								Number of grading periods in this academic year
+							</p>
+						</div>
+
+						<div className="flex items-center gap-3 rounded-lg bg-primary/5 border border-primary/20 p-4">
+							<input
+								type="checkbox"
+								id="is-current"
+								checked={formData.isCurrent}
+								onChange={(e) => handleInputChange("isCurrent", e.target.checked)}
+								className="h-4 w-4 rounded border-primary text-primary focus:ring-primary"
+							/>
+							<Label htmlFor="is-current" className="text-sm font-medium cursor-pointer flex-1">
+								Set as active school year immediately
+							</Label>
+						</div>
 					</div>
 				</div>
 
-				<DialogFooter>
-					<Button 
-						variant="outline" 
+				<DialogFooter className="p-6 pt-2 border-t border-border/50 bg-muted/20">
+					<Button
+						variant="outline"
 						onClick={() => onOpenChange(false)}
 						disabled={isCreating}
+						className="bg-background hover:bg-muted"
 					>
 						Cancel
 					</Button>
-					<Button 
-						onClick={handleCreate} 
-						disabled={isCreating || !formData.yearName || !formData.yearCode || !formData.startDate || !formData.endDate} 
-						className="bg-primary hover:bg-primary/90"
+					<Button
+						onClick={handleCreate}
+						disabled={isCreating || !formData.yearName || !formData.yearCode || !formData.startDate || !formData.endDate}
+						className="bg-primary hover:bg-primary/90 shadow-sm"
 					>
 						{isCreating ? (
 							<>

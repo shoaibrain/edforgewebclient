@@ -146,6 +146,13 @@ export default async function InstitutionSettingsPage({ searchParams }: Institut
 
 	return (
 		<div className="flex flex-1 flex-col gap-6 p-6 w-full">
+			<div className="flex flex-col gap-2">
+				<h1 className="text-3xl font-bold tracking-tight">Institution Settings</h1>
+				<p className="text-muted-foreground">
+					Manage your educational institution's profile, academic years, and configuration.
+				</p>
+			</div>
+
 			<Suspense fallback={
 				<div className="animate-pulse space-y-4">
 					<div className="h-8 bg-muted rounded w-1/4"></div>
@@ -156,12 +163,12 @@ export default async function InstitutionSettingsPage({ searchParams }: Institut
 					</div>
 				</div>
 			}>
-			<InstitutionSettingsContent 
-				user={user} 
-				school={currentSchool}
-				academicYears={academicYears}
-				initialActiveTab={activeTab}
-			/>
+				<InstitutionSettingsContent
+					user={user}
+					school={currentSchool!}
+					academicYears={academicYears}
+					initialActiveTab={activeTab}
+				/>
 			</Suspense>
 		</div>
 	);
