@@ -1,12 +1,15 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, FileText, LogIn } from "lucide-react"
+import { ArrowRight, FileText, LogIn, LayoutDashboard } from "lucide-react"
+import { useSession } from "next-auth/react"
 
 export default function Hero() {
     const canvasRef = useRef<HTMLCanvasElement>(null)
+    const { data: session, status } = useSession()
+    const isAuthenticated = status === "authenticated"
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -204,16 +207,29 @@ export default function Hero() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-[fadeIn_1.4s_ease-out]">
-                    <Link href="/auth/signin">
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="rounded-full border-[#e76f51] text-[#e76f51] hover:bg-[#e76f51]/10 px-8 h-12 text-base group bg-transparent shadow-lg shadow-[#e76f51]/10"
-                        >
-                            <LogIn className="mr-2 w-4 h-4" />
-                            Login
-                        </Button>
-                    </Link>
+                    {isAuthenticated ? (
+                        <Link href="/dashboard">
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="rounded-full border-[#e76f51] text-[#e76f51] hover:bg-[#e76f51]/10 px-8 h-12 text-base group bg-transparent shadow-lg shadow-[#e76f51]/10"
+                            >
+                                <LayoutDashboard className="mr-2 w-4 h-4" />
+                                Go To Dashboard
+                            </Button>
+                        </Link>
+                    ) : (
+                        <Link href="/auth/signin">
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="rounded-full border-[#e76f51] text-[#e76f51] hover:bg-[#e76f51]/10 px-8 h-12 text-base group bg-transparent shadow-lg shadow-[#e76f51]/10"
+                            >
+                                <LogIn className="mr-2 w-4 h-4" />
+                                Login
+                            </Button>
+                        </Link>
+                    )}
                     <Button
                         size="lg"
                         variant="outline"

@@ -128,11 +128,6 @@ export const DASHBOARD_NAVIGATION: NavItem[] = [
 				url: "/dashboard/admin/roles",
 				permissions: [Permission.MANAGE_ROLES],
 			},
-			{
-				title: "System Settings",
-				url: "/dashboard/admin/system",
-				permissions: [Permission.MANAGE_SYSTEM_SETTINGS],
-			},
 		],
 	},
 	{

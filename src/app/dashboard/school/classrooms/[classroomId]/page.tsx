@@ -2,6 +2,7 @@
  * EdForge EMIS - Classroom Details Page
  * 
  * Server component for viewing classroom details with proper authentication and authorization.
+ * Enhanced with premium UI/UX and smooth animations.
  * 
  * This is a Server Component for security and performance.
  */
@@ -9,7 +10,7 @@
 import { notFound } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getClassroomById } from "@/data/mock-classrooms";
-import { ClassroomDetailsContent } from "@/components/classroom-details-content";
+import { ClassroomDetailsContent } from "./_components/classroom-details-enhanced";
 import { Suspense } from "react";
 import { AlertCircle } from "lucide-react";
 
@@ -22,7 +23,7 @@ interface ClassroomDetailsPageProps {
 export default async function ClassroomDetailsPage({ params }: ClassroomDetailsPageProps) {
 	// Server-side authentication and authorization
 	const user = await getCurrentUser();
-	
+
 	if (!user) {
 		return (
 			<div className="flex h-screen items-center justify-center">
@@ -55,7 +56,14 @@ export default async function ClassroomDetailsPage({ params }: ClassroomDetailsP
 	}
 
 	return (
-		<Suspense fallback={<div>Loading classroom details...</div>}>
+		<Suspense fallback={
+			<div className="flex h-screen items-center justify-center">
+				<div className="text-center">
+					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
+					<p className="text-muted-foreground">Loading classroom details...</p>
+				</div>
+			</div>
+		}>
 			<ClassroomDetailsContent classroom={classroom} />
 		</Suspense>
 	);
