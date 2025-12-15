@@ -1,6 +1,16 @@
 import { withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server"
 
+// Public routes that don't require authentication
+const publicRoutes = [
+  "/",
+  "/privacy",
+  "/terms",
+  "/security",
+  "/about",
+  "/contact",
+]
+
 export default withAuth(
   function middleware(req) {
     // Add custom logic here if needed
@@ -9,9 +19,14 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        if (req.nextUrl.pathname === "/") {
+        const pathname = req.nextUrl.pathname
+        
+        // Allow public routes without authentication
+        if (publicRoutes.includes(pathname)) {
           return true
         }
+        
+        // All other routes require authentication
         return !!token
       },
     },

@@ -43,7 +43,7 @@ interface StudentsPageProps {
 export default async function StudentsPage({ searchParams }: StudentsPageProps) {
 	// Server-side authentication and authorization
 	const user = await getCurrentUser();
-	
+
 	if (!user) {
 		return (
 			<div className="flex h-screen items-center justify-center">
@@ -216,22 +216,14 @@ export default async function StudentsPage({ searchParams }: StudentsPageProps) 
 
 			{/* Comprehensive Analytics Dashboard */}
 			<div className="space-y-6">
-				{/* Row 2: Grade Distribution & Performance Trends */}
-				<div className="grid gap-6 lg:grid-cols-2">
-					<GradeDistributionChart data={gradeDistribution} />
+				{/* Row 2: Performance Trends */}
+				<div className="grid gap-6 lg:grid-cols-1">
 					<PerformanceTrendsChart data={performanceTrends} />
 				</div>
 
-				{/* Row 3: Enrollment Trends & Status Breakdown */}
-				<div className="grid gap-6 lg:grid-cols-2">
+				{/* Row 3: Enrollment Trends */}
+				<div className="grid gap-6 lg:grid-cols-1">
 					<EnrollmentTrendsChart data={enrollmentTrends} />
-					<StatusBreakdownChart data={statusBreakdown} />
-				</div>
-
-				{/* Row 4: Grade-Level Performance & Risk Indicators */}
-				<div className="grid gap-6 lg:grid-cols-2">
-					<GradeLevelPerformanceChart data={gradeLevelPerformance} />
-					<RiskIndicatorsChart data={riskIndicators} />
 				</div>
 			</div>
 

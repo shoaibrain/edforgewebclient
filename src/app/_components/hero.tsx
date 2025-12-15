@@ -1,15 +1,11 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import Link from "next/link"
+import { useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, FileText, LogIn, LayoutDashboard } from "lucide-react"
-import { useSession } from "next-auth/react"
+import { Play } from "lucide-react"
 
 export default function Hero() {
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const { data: session, status } = useSession()
-    const isAuthenticated = status === "authenticated"
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -206,38 +202,21 @@ export default function Hero() {
                     EdForge is the event-driven, enterprise-grade EMIS that evolves your school into the agent-first era.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-[fadeIn_1.4s_ease-out]">
-                    {isAuthenticated ? (
-                        <Link href="/dashboard">
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="rounded-full border-[#e76f51] text-[#e76f51] hover:bg-[#e76f51]/10 px-8 h-12 text-base group bg-transparent shadow-lg shadow-[#e76f51]/10"
-                            >
-                                <LayoutDashboard className="mr-2 w-4 h-4" />
-                                Go To Dashboard
-                            </Button>
-                        </Link>
-                    ) : (
-                        <Link href="/auth/signin">
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="rounded-full border-[#e76f51] text-[#e76f51] hover:bg-[#e76f51]/10 px-8 h-12 text-base group bg-transparent shadow-lg shadow-[#e76f51]/10"
-                            >
-                                <LogIn className="mr-2 w-4 h-4" />
-                                Login
-                            </Button>
-                        </Link>
-                    )}
-                    <Button
-                        size="lg"
-                        variant="outline"
-                        className="rounded-full border-[#2a9d8f] text-[#2a9d8f] hover:bg-[#2a9d8f]/10 px-8 h-12 text-base group bg-transparent"
+                <div className="flex justify-center items-center animate-[fadeIn_1.4s_ease-out]">
+                    <a
+                        href="https://edforge-saas-frontend.vercel.app"
+                        target="_blank"
+                        rel="noopener noreferrer"
                     >
-                        <FileText className="mr-2 w-4 h-4" />
-                        Explore Architecture
-                    </Button>
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            className="rounded-full border-[#e76f51] text-[#e76f51] hover:bg-[#e76f51]/10 px-8 h-12 text-base group bg-transparent shadow-lg shadow-[#e76f51]/10"
+                        >
+                            <Play className="mr-2 w-4 h-4" />
+                            Demo
+                        </Button>
+                    </a>
                 </div>
             </div>
         </section>

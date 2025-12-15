@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useMemo } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -26,20 +26,36 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
     Building2,
     Plus,
     Users,
     DollarSign,
-    BookOpen,
-    GraduationCap,
+    MoreHorizontal,
+    ArrowUpDown,
+    Search,
+    Filter,
+    Download,
     Eye,
     Edit,
     Trash2,
-    TrendingUp,
-    BarChart3,
 } from "lucide-react"
 import Link from "next/link"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts"
 
 interface Department {
     id: string
@@ -87,27 +103,48 @@ export function DepartmentsContent({ departments, schools }: DepartmentsContentP
     const [search, setSearch] = useState("")
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
     const [editingDept, setEditingDept] = useState<Department | null>(null)
+    const [sortConfig, setSortConfig] = useState<{ key: keyof Department | 'utilization'; direction: 'asc' | 'desc' } | null>(null)
 
     // Filter departments
-    const filteredDepartments = departments.filter(dept => {
-        const matchesSchool = selectedSchool === "all" || dept.schoolId === selectedSchool
-        const matchesType = selectedType === "all" || dept.type === selectedType
-        const matchesSearch = dept.name.toLowerCase().includes(search.toLowerCase())
-        return matchesSchool && matchesType && matchesSearch
-    })
+    const filteredDepartments = useMemo(() => {
+        let filtered = departments.filter(dept => {
+            const matchesSchool = selectedSchool === "all" || dept.schoolId === selectedSchool
+            const matchesType = selectedType === "all" || dept.type === selectedType
+            const matchesSearch = dept.name.toLowerCase().includes(search.toLowerCase()) ||
+                dept.headOfDepartment?.name.toLowerCase().includes(search.toLowerCase())
+            return matchesSchool && matchesType && matchesSearch
+        })
 
-    // Calculate statistics
-    const totalStaff = filteredDepartments.reduce((sum, d) => sum + d.staffCount, 0)
-    const totalBudget = filteredDepartments.reduce((sum, d) => sum + d.budgetAllocated, 0)
-    const totalBudgetUsed = filteredDepartments.reduce((sum, d) => sum + d.budgetUsed, 0)
-    const budgetUtilization = totalBudget > 0 ? ((totalBudgetUsed / totalBudget) * 100).toFixed(1) : "0"
+        if (sortConfig) {
+            filtered.sort((a, b) => {
+                let aValue: any = a[sortConfig.key as keyof Department]
+                let bValue: any = b[sortConfig.key as keyof Department]
 
-    // Prepare chart data - Budget by Department
-    const budgetData = filteredDepartments.slice(0, 8).map(dept => ({
-        name: dept.name.length > 15 ? dept.name.substring(0, 15) + '...' : dept.name,
-        Allocated: dept.budgetAllocated,
-        Used: dept.budgetUsed,
-    }))
+                if (sortConfig.key === 'utilization') {
+                    aValue = a.budgetUsed / a.budgetAllocated
+                    bValue = b.budgetUsed / b.budgetAllocated
+                }
+
+                if (aValue < bValue) {
+                    return sortConfig.direction === 'asc' ? -1 : 1
+                }
+                if (aValue > bValue) {
+                    return sortConfig.direction === 'asc' ? 1 : -1
+                }
+                return 0
+            })
+        }
+
+        return filtered
+    }, [departments, selectedSchool, selectedType, search, sortConfig])
+
+    const handleSort = (key: keyof Department | 'utilization') => {
+        let direction: 'asc' | 'desc' = 'asc'
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc'
+        }
+        setSortConfig({ key, direction })
+    }
 
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-US', {
@@ -118,20 +155,11 @@ export function DepartmentsContent({ departments, schools }: DepartmentsContentP
         }).format(amount)
     }
 
-    const container = {
-        hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1
-            }
-        }
-    }
-
-    const item = {
-        hidden: { opacity: 0, y: 20 },
-        show: { opacity: 1, y: 0 }
-    }
+    // Calculate statistics
+    const totalStaff = filteredDepartments.reduce((sum, d) => sum + d.staffCount, 0)
+    const totalBudget = filteredDepartments.reduce((sum, d) => sum + d.budgetAllocated, 0)
+    const totalBudgetUsed = filteredDepartments.reduce((sum, d) => sum + d.budgetUsed, 0)
+    const budgetUtilization = totalBudget > 0 ? ((totalBudgetUsed / totalBudget) * 100).toFixed(1) : "0"
 
     return (
         <div className="space-y-6">
@@ -143,13 +171,137 @@ export function DepartmentsContent({ departments, schools }: DepartmentsContentP
                         Manage academic and administrative departments across schools.
                     </p>
                 </div>
-                <div className="flex items-center gap-2 flex-wrap">
-                    <Input
-                        placeholder="Search departments..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="w-[200px]"
-                    />
+                <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                    <DialogTrigger asChild>
+                        <Button className="bg-primary hover:bg-primary/90 shadow-sm">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Department
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Add Department</DialogTitle>
+                            <DialogDescription>
+                                Create a new department for your school.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                            <div className="grid gap-2">
+                                <Label htmlFor="deptName">Department Name</Label>
+                                <Input id="deptName" placeholder="e.g., Mathematics, English" />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="deptType">Department Type</Label>
+                                <Select>
+                                    <SelectTrigger id="deptType">
+                                        <SelectValue placeholder="Select type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="academic">Academic</SelectItem>
+                                        <SelectItem value="administrative">Administrative</SelectItem>
+                                        <SelectItem value="support">Support</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="school">School</Label>
+                                <Select>
+                                    <SelectTrigger id="school">
+                                        <SelectValue placeholder="Select school" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {schools.map((school) => (
+                                            <SelectItem key={school.schoolId} value={school.schoolId}>
+                                                {school.schoolName}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="budget">Budget Allocation</Label>
+                                <Input id="budget" type="number" placeholder="e.g., 50000" />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                                Cancel
+                            </Button>
+                            <Button onClick={() => setIsAddDialogOpen(false)}>Create Department</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            </div>
+
+            {/* Statistics Cards */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card className="bg-card border-border shadow-sm">
+                    <CardContent className="p-4">
+                        <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                            <Building2 className="h-4 w-4" />
+                            <span className="text-xs font-medium">Total Departments</span>
+                        </div>
+                        <div className="text-2xl font-bold">{filteredDepartments.length}</div>
+                    </CardContent>
+                </Card>
+
+                <Card className="bg-card border-border shadow-sm">
+                    <CardContent className="p-4">
+                        <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                            <Users className="h-4 w-4" />
+                            <span className="text-xs font-medium">Total Staff</span>
+                        </div>
+                        <div className="text-2xl font-bold">{totalStaff}</div>
+                    </CardContent>
+                </Card>
+
+                <Card className="bg-card border-border shadow-sm">
+                    <CardContent className="p-4">
+                        <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                            <DollarSign className="h-4 w-4" />
+                            <span className="text-xs font-medium">Total Budget</span>
+                        </div>
+                        <div className="text-2xl font-bold">{formatCurrency(totalBudget)}</div>
+                    </CardContent>
+                </Card>
+
+                <Card className={cn(
+                    "bg-card border-border shadow-sm",
+                    Number(budgetUtilization) >= 90 ? "border-error/50 bg-error/5" :
+                        Number(budgetUtilization) >= 75 ? "border-warning/50 bg-warning/5" :
+                            "border-success/50 bg-success/5"
+                )}>
+                    <CardContent className="p-4">
+                        <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                            <DollarSign className="h-4 w-4" />
+                            <span className="text-xs font-medium">Budget Utilization</span>
+                        </div>
+                        <div className={cn(
+                            "text-2xl font-bold",
+                            Number(budgetUtilization) >= 90 ? "text-error" :
+                                Number(budgetUtilization) >= 75 ? "text-warning" :
+                                    "text-success"
+                        )}>
+                            {budgetUtilization}%
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* Filters and Search */}
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-card p-4 rounded-lg border border-border shadow-sm">
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                    <div className="relative w-full md:w-[300px]">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            placeholder="Search departments..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="pl-9"
+                        />
+                    </div>
+                </div>
+                <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
                     <Select value={selectedSchool} onValueChange={setSelectedSchool}>
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="All Schools" />
@@ -174,331 +326,163 @@ export function DepartmentsContent({ departments, schools }: DepartmentsContentP
                             <SelectItem value="support">Support</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button className="bg-primary hover:bg-primary/90">
-                                <Plus className="h-4 w-4 mr-2" />
-                                Add Department
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Add Department</DialogTitle>
-                                <DialogDescription>
-                                    Create a new department for your school.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="deptName">Department Name</Label>
-                                    <Input id="deptName" placeholder="e.g., Mathematics, English" />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="deptType">Department Type</Label>
-                                    <Select>
-                                        <SelectTrigger id="deptType">
-                                            <SelectValue placeholder="Select type" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="academic">Academic</SelectItem>
-                                            <SelectItem value="administrative">Administrative</SelectItem>
-                                            <SelectItem value="support">Support</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="school">School</Label>
-                                    <Select>
-                                        <SelectTrigger id="school">
-                                            <SelectValue placeholder="Select school" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {schools.map((school) => (
-                                                <SelectItem key={school.schoolId} value={school.schoolId}>
-                                                    {school.schoolName}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="budget">Budget Allocation</Label>
-                                    <Input id="budget" type="number" placeholder="e.g., 50000" />
-                                </div>
-                            </div>
-                            <DialogFooter>
-                                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                                    Cancel
-                                </Button>
-                                <Button onClick={() => setIsAddDialogOpen(false)}>Create Department</Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
+                    <Button variant="outline" size="icon">
+                        <Download className="h-4 w-4" />
+                    </Button>
                 </div>
             </div>
 
-            {/* Statistics Cards */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card className="bg-card border-border shadow-sm">
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                            <Building2 className="h-4 w-4" />
-                            <span className="text-xs font-medium">Total Departments</span>
-                        </div>
-                        <div className="text-2xl font-bold">{filteredDepartments.length}</div>
-                        <p className="text-xs text-muted-foreground mt-1">Across all schools</p>
-                    </CardContent>
-                </Card>
-
-                <Card className="bg-card border-border shadow-sm">
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                            <Users className="h-4 w-4" />
-                            <span className="text-xs font-medium">Total Staff</span>
-                        </div>
-                        <div className="text-2xl font-bold">{totalStaff}</div>
-                        <p className="text-xs text-muted-foreground mt-1">Department members</p>
-                    </CardContent>
-                </Card>
-
-                <Card className="bg-card border-border shadow-sm">
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                            <DollarSign className="h-4 w-4" />
-                            <span className="text-xs font-medium">Total Budget</span>
-                        </div>
-                        <div className="text-2xl font-bold">{formatCurrency(totalBudget)}</div>
-                        <p className="text-xs text-muted-foreground mt-1">Allocated funds</p>
-                    </CardContent>
-                </Card>
-
-                <Card className={cn(
-                    "bg-card border-border shadow-sm",
-                    Number(budgetUtilization) >= 90 ? "border-error/50 bg-error/5" :
-                        Number(budgetUtilization) >= 75 ? "border-warning/50 bg-warning/5" :
-                            "border-success/50 bg-success/5"
-                )}>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                            <TrendingUp className="h-4 w-4" />
-                            <span className="text-xs font-medium">Budget Used</span>
-                        </div>
-                        <div className={cn(
-                            "text-2xl font-bold",
-                            Number(budgetUtilization) >= 90 ? "text-error" :
-                                Number(budgetUtilization) >= 75 ? "text-warning" :
-                                    "text-success"
-                        )}>
-                            {budgetUtilization}%
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">{formatCurrency(totalBudgetUsed)} spent</p>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Budget Chart */}
-            {budgetData.length > 0 && (
-                <Card className="bg-card border-border shadow-sm">
-                    <CardHeader className="pb-3">
-                        <CardTitle className="text-base flex items-center gap-2">
-                            <BarChart3 className="h-4 w-4" />
-                            Budget Allocation by Department
-                        </CardTitle>
-                        <CardDescription>Budget allocated vs. used across departments</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <ResponsiveContainer width="100%" height={250}>
-                            <BarChart data={budgetData}>
-                                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                                <XAxis dataKey="name" className="text-xs" angle={-45} textAnchor="end" height={80} />
-                                <YAxis className="text-xs" />
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: "hsl(var(--card))",
-                                        border: "1px solid hsl(var(--border))",
-                                        borderRadius: "6px",
-                                    }}
-                                    formatter={(value) => formatCurrency(Number(value))}
-                                />
-                                <Legend />
-                                <Bar dataKey="Allocated" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="Used" fill="#10b981" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-            )}
-
-            {/* Department Cards Grid */}
-            {filteredDepartments.length === 0 ? (
-                <Card>
-                    <CardContent className="p-12 text-center">
-                        <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold mb-2">No departments found</h3>
-                        <p className="text-sm text-muted-foreground mb-4">
-                            {search ? "Try adjusting your search criteria" : "Get started by adding your first department"}
-                        </p>
-                        {!search && (
-                            <Button onClick={() => setIsAddDialogOpen(true)}>
-                                <Plus className="h-4 w-4 mr-2" />
-                                Add Department
-                            </Button>
-                        )}
-                    </CardContent>
-                </Card>
-            ) : (
-                <motion.div
-                    variants={container}
-                    initial="hidden"
-                    animate="show"
-                    className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
-                >
-                    {filteredDepartments.map((dept) => {
-                        const budgetUtilization = (dept.budgetUsed / dept.budgetAllocated * 100).toFixed(0)
-                        return (
-                            <motion.div key={dept.id} variants={item}>
-                                <Card className="bg-card border-border shadow-sm hover:shadow-md transition-all group h-full">
-                                    <CardHeader className="pb-3">
-                                        <div className="flex items-start justify-between">
-                                            <div className="flex-1">
-                                                <CardTitle className="text-lg flex items-center gap-2">
-                                                    <Building2 className="h-5 w-5 text-primary" />
-                                                    {dept.name}
-                                                </CardTitle>
-                                                <CardDescription className="mt-1">
-                                                    {dept.schoolName}
-                                                </CardDescription>
-                                            </div>
-                                            <Badge
-                                                className={cn(
-                                                    "text-xs font-medium",
-                                                    DEPT_TYPE_COLORS[dept.type]
-                                                )}
+            {/* Data Table */}
+            <Card className="border-border shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="bg-muted/50 hover:bg-muted/50">
+                                <TableHead className="w-[250px]">
+                                    <Button variant="ghost" className="p-0 hover:bg-transparent font-semibold" onClick={() => handleSort('name')}>
+                                        Department Name
+                                        <ArrowUpDown className="ml-2 h-3 w-3" />
+                                    </Button>
+                                </TableHead>
+                                <TableHead>Type</TableHead>
+                                <TableHead>Head of Dept.</TableHead>
+                                <TableHead className="text-center">Staff</TableHead>
+                                <TableHead className="text-center">Students</TableHead>
+                                <TableHead className="text-right">
+                                    <Button variant="ghost" className="p-0 hover:bg-transparent font-semibold" onClick={() => handleSort('budgetAllocated')}>
+                                        Budget
+                                        <ArrowUpDown className="ml-2 h-3 w-3" />
+                                    </Button>
+                                </TableHead>
+                                <TableHead className="text-right">Utilization</TableHead>
+                                <TableHead className="w-[50px]"></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            <AnimatePresence mode="popLayout">
+                                {filteredDepartments.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
+                                            No departments found matching your criteria.
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    filteredDepartments.map((dept, index) => {
+                                        const utilization = (dept.budgetUsed / dept.budgetAllocated * 100)
+                                        return (
+                                            <motion.tr
+                                                key={dept.id}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, scale: 0.95 }}
+                                                transition={{ duration: 0.2, delay: index * 0.05 }}
+                                                className="group hover:bg-muted/30 transition-colors border-b border-border last:border-0"
                                             >
-                                                {DEPT_TYPE_LABELS[dept.type]}
-                                            </Badge>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="space-y-4">
-                                            {/* Department Head */}
-                                            {dept.headOfDepartment ? (
-                                                <div className="flex items-center gap-3 p-2 bg-muted/30 rounded-lg">
-                                                    <Avatar className="h-10 w-10">
-                                                        <AvatarFallback className="text-xs">
-                                                            {dept.headOfDepartment.name.split(' ').map(n => n[0]).join('')}
-                                                        </AvatarFallback>
-                                                    </Avatar>
-                                                    <div className="flex-1 min-w-0">
-                                                        <p className="text-sm font-medium truncate">
-                                                            {dept.headOfDepartment.name}
-                                                        </p>
-                                                        <p className="text-xs text-muted-foreground">Department Head</p>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center gap-3 p-2 bg-muted/30 rounded-lg">
-                                                    <Avatar className="h-10 w-10">
-                                                        <AvatarFallback>
-                                                            <GraduationCap className="h-4 w-4" />
-                                                        </AvatarFallback>
-                                                    </Avatar>
-                                                    <div className="flex-1">
-                                                        <p className="text-sm text-muted-foreground">No head assigned</p>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {/* Metrics Grid */}
-                                            <div className="grid grid-cols-2 gap-2">
-                                                <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-lg">
-                                                    <Users className="h-4 w-4 text-muted-foreground" />
+                                                <TableCell className="font-medium">
                                                     <div className="flex flex-col">
-                                                        <span className="text-xs text-muted-foreground">Staff</span>
-                                                        <span className="text-sm font-medium">{dept.staffCount}</span>
+                                                        <span className="text-sm font-semibold text-foreground">{dept.name}</span>
+                                                        <span className="text-xs text-muted-foreground">{dept.schoolName}</span>
                                                     </div>
-                                                </div>
-                                                <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-lg">
-                                                    <GraduationCap className="h-4 w-4 text-muted-foreground" />
-                                                    <div className="flex flex-col">
-                                                        <span className="text-xs text-muted-foreground">Students</span>
-                                                        <span className="text-sm font-medium">{dept.studentCount}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* Budget */}
-                                            <div className="space-y-1.5">
-                                                <div className="flex items-center justify-between text-xs">
-                                                    <span className="text-muted-foreground">Budget</span>
-                                                    <span className="font-medium">
-                                                        {formatCurrency(dept.budgetUsed)} / {formatCurrency(dept.budgetAllocated)}
-                                                    </span>
-                                                </div>
-                                                <div className="w-full bg-muted rounded-full h-2">
-                                                    <div
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge
                                                         className={cn(
-                                                            "h-2 rounded-full transition-all",
-                                                            Number(budgetUtilization) >= 90 ? "bg-error" :
-                                                                Number(budgetUtilization) >= 75 ? "bg-warning" :
-                                                                    "bg-success"
+                                                            "text-xs font-medium border",
+                                                            DEPT_TYPE_COLORS[dept.type]
                                                         )}
-                                                        style={{ width: `${Math.min(Number(budgetUtilization), 100)}%` }}
-                                                    />
-                                                </div>
-                                                <p className="text-xs text-muted-foreground">{budgetUtilization}% utilized</p>
-                                            </div>
-
-                                            {/* Subjects (for academic departments) */}
-                                            {dept.type === "academic" && dept.subjectsOffered.length > 0 && (
-                                                <div className="pt-2">
-                                                    <p className="text-xs text-muted-foreground mb-2">Subjects Offered</p>
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {dept.subjectsOffered.slice(0, 3).map((subject, idx) => (
-                                                            <Badge key={idx} variant="outline" className="text-xs">
-                                                                {subject}
-                                                            </Badge>
-                                                        ))}
-                                                        {dept.subjectsOffered.length > 3 && (
-                                                            <Badge variant="outline" className="text-xs">
-                                                                +{dept.subjectsOffered.length - 3}
-                                                            </Badge>
-                                                        )}
+                                                        variant="outline"
+                                                    >
+                                                        {DEPT_TYPE_LABELS[dept.type]}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell>
+                                                    {dept.headOfDepartment ? (
+                                                        <div className="flex items-center gap-2">
+                                                            <Avatar className="h-6 w-6">
+                                                                <AvatarFallback className="text-[10px]">
+                                                                    {dept.headOfDepartment.name.split(' ').map(n => n[0]).join('')}
+                                                                </AvatarFallback>
+                                                            </Avatar>
+                                                            <div className="flex flex-col">
+                                                                <span className="text-xs font-medium">{dept.headOfDepartment.name}</span>
+                                                                <span className="text-[10px] text-muted-foreground">{dept.headOfDepartment.email}</span>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-xs text-muted-foreground italic">Unassigned</span>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <Badge variant="secondary" className="font-normal">
+                                                        {dept.staffCount}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <span className="text-sm text-muted-foreground">{dept.studentCount > 0 ? dept.studentCount : '-'}</span>
+                                                </TableCell>
+                                                <TableCell className="text-right font-medium tabular-nums">
+                                                    {formatCurrency(dept.budgetAllocated)}
+                                                </TableCell>
+                                                <TableCell className="text-right">
+                                                    <div className="flex flex-col items-end gap-1">
+                                                        <span className={cn(
+                                                            "text-xs font-bold",
+                                                            utilization >= 90 ? "text-error" :
+                                                                utilization >= 75 ? "text-warning" :
+                                                                    "text-success"
+                                                        )}>
+                                                            {utilization.toFixed(0)}%
+                                                        </span>
+                                                        <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                                                            <div
+                                                                className={cn(
+                                                                    "h-full rounded-full",
+                                                                    utilization >= 90 ? "bg-error" :
+                                                                        utilization >= 75 ? "bg-warning" :
+                                                                            "bg-success"
+                                                                )}
+                                                                style={{ width: `${Math.min(utilization, 100)}%` }}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-
-                                            {/* Actions */}
-                                            <div className="flex items-center gap-2 pt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <Link href={`/dashboard/school/departments/${dept.id}`} className="flex-1">
-                                                    <Button variant="outline" size="sm" className="w-full">
-                                                        <Eye className="h-3 w-3 mr-1" />
-                                                        View Details
-                                                    </Button>
-                                                </Link>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => setEditingDept(dept)}
-                                                >
-                                                    <Edit className="h-3 w-3" />
-                                                </Button>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="text-error hover:text-error"
-                                                >
-                                                    <Trash2 className="h-3 w-3" />
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        )
-                    })}
-                </motion.div>
-            )}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                <span className="sr-only">Open menu</span>
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                            <DropdownMenuItem asChild>
+                                                                <Link href={`/dashboard/school/departments/${dept.id}`}>
+                                                                    <Eye className="mr-2 h-4 w-4" />
+                                                                    View Details
+                                                                </Link>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => setEditingDept(dept)}>
+                                                                <Edit className="mr-2 h-4 w-4" />
+                                                                Edit Department
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem className="text-error focus:text-error">
+                                                                <Trash2 className="mr-2 h-4 w-4" />
+                                                                Delete Department
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </TableCell>
+                                            </motion.tr>
+                                        )
+                                    })
+                                )}
+                            </AnimatePresence>
+                        </TableBody>
+                    </Table>
+                </div>
+            </Card>
 
             {/* Edit Dialog */}
             <Dialog open={editingDept !== null} onOpenChange={(open) => !open && setEditingDept(null)}>

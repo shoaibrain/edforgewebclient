@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import {
     Building2,
     Users,
@@ -18,11 +17,13 @@ import {
     Activity,
     School,
     BarChart3,
-    PieChart,
     Wallet,
-    Globe,
     Zap,
-    Code2
+    Code2,
+    Shield,
+    FileText,
+    Mail,
+    Info,
 } from "lucide-react"
 
 // --- Types & Data ---
@@ -67,7 +68,7 @@ const NAV_ITEMS: NavItem[] = [
                     iconColor: "#e76f51",
                     title: "EdForge Core",
                     description: "Central nervous system for school ops.",
-                    href: "#core",
+                    href: "/#core",
                     visual: (
                         <div className="w-full h-24 mt-3 rounded-md bg-gradient-to-br from-orange-500/10 to-orange-500/5 border border-orange-500/10 flex items-center justify-center overflow-hidden relative group-hover:border-orange-500/20 transition-all">
                             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:14px_24px]"></div>
@@ -84,7 +85,7 @@ const NAV_ITEMS: NavItem[] = [
                     iconColor: "#2a9d8f",
                     title: "Analytics",
                     description: "Real-time student performance insights.",
-                    href: "#analytics",
+                    href: "/#analytics",
                     visual: (
                         <div className="w-full h-24 mt-3 rounded-md bg-gradient-to-br from-teal-500/10 to-teal-500/5 border border-teal-500/10 flex items-center justify-center overflow-hidden relative group-hover:border-teal-500/20 transition-all">
                             <div className="absolute bottom-0 left-0 right-0 h-12 flex items-end justify-around px-4 pb-2 gap-1">
@@ -101,7 +102,7 @@ const NAV_ITEMS: NavItem[] = [
                     iconColor: "#e9c46a",
                     title: "Finance",
                     description: "Automated payroll and fee management.",
-                    href: "#finance",
+                    href: "/#finance",
                     visual: (
                         <div className="w-full h-24 mt-3 rounded-md bg-gradient-to-br from-yellow-500/10 to-yellow-500/5 border border-yellow-500/10 flex items-center justify-center overflow-hidden relative group-hover:border-yellow-500/20 transition-all">
                             <div className="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center border border-yellow-500/20">
@@ -112,9 +113,9 @@ const NAV_ITEMS: NavItem[] = [
                 }
             ],
             footerItems: [
-                { title: "API Reference", href: "#api", icon: Code2 },
-                { title: "Integrations", href: "#integrations", icon: Zap },
-                { title: "Partner Program", href: "#partners", icon: Globe },
+                { title: "Security", href: "/security", icon: Shield },
+                { title: "API Reference", href: "/#api", icon: Code2 },
+                { title: "Integrations", href: "/#integrations", icon: Zap },
             ]
         },
     },
@@ -133,36 +134,31 @@ const NAV_ITEMS: NavItem[] = [
                     iconColor: "#e76f51", // burnt_peach
                     title: "For Schools",
                     description: "Enterprise-grade EMIS for K-12",
-                    href: "#schools",
+                    href: "/#schools",
                 },
                 {
                     icon: Building2,
                     iconColor: "#2a9d8f", // verdigris
                     title: "For Districts",
                     description: "Multi-school management at scale",
-                    href: "#districts",
+                    href: "/#districts",
                 },
                 {
                     icon: GraduationCap,
                     iconColor: "#e9c46a", // tuscan_sun
                     title: "For Teachers",
                     description: "Streamline classroom operations",
-                    href: "#teachers",
+                    href: "/#teachers",
                 },
                 {
                     icon: UserCircle,
                     iconColor: "#f4a261", // sandy_brown
                     title: "For Parents",
                     description: "Stay connected with student progress",
-                    href: "#parents",
+                    href: "/#parents",
                 },
             ],
         },
-    },
-    {
-        label: "Pricing",
-        type: "link",
-        href: "#pricing",
     },
     {
         label: "Resources",
@@ -179,28 +175,69 @@ const NAV_ITEMS: NavItem[] = [
                     iconColor: "#2a9d8f", // verdigris
                     title: "Documentation",
                     description: "Complete guides and docs",
-                    href: "#docs",
+                    href: "/#docs",
                 },
                 {
                     icon: Video,
                     iconColor: "#e76f51", // burnt_peach
                     title: "Video Tutorials",
                     description: "Step-by-step walkthroughs",
-                    href: "#videos",
+                    href: "/#videos",
                 },
                 {
                     icon: Users,
                     iconColor: "#e9c46a", // tuscan_sun
                     title: "Community",
                     description: "Connect with educators",
-                    href: "#community",
+                    href: "/#community",
                 },
                 {
                     icon: LifeBuoy,
                     iconColor: "#f4a261", // sandy_brown
                     title: "Support Center",
                     description: "Get 24/7 expert help",
-                    href: "#support",
+                    href: "/contact",
+                },
+            ],
+        },
+    },
+    {
+        label: "Company",
+        type: "mega_menu",
+        dropdown: {
+            layout: "grid",
+            header: {
+                title: "About EdForge",
+                description: "Learn about our mission and values",
+            },
+            items: [
+                {
+                    icon: Info,
+                    iconColor: "#2a9d8f",
+                    title: "About Us",
+                    description: "Our mission and story",
+                    href: "/about",
+                },
+                {
+                    icon: Mail,
+                    iconColor: "#e76f51",
+                    title: "Contact",
+                    description: "Get in touch with our team",
+                    href: "/contact",
+                },
+                {
+                    icon: Shield,
+                    iconColor: "#e9c46a",
+                    title: "Security",
+                    description: "How we protect your data",
+                    href: "/security",
+                },
+                {
+                    icon: FileText,
+                    iconColor: "#f4a261",
+                    title: "Legal",
+                    description: "Privacy & Terms",
+                    href: "/privacy",
                 },
             ],
         },
@@ -445,7 +482,7 @@ export default function Navbar() {
                     </div>
                 </div>
 
-                {/* 3. Right Section */}
+                {/* 3. Right Section - Mobile Toggle Only */}
                 <div className="flex items-center gap-4">
                     {/* Mobile Toggle */}
                     <button
@@ -501,11 +538,6 @@ export default function Navbar() {
                             )}
                         </div>
                     ))}
-                    <div className="mt-auto pb-8">
-                        <Button className="w-full rounded-full bg-white text-black py-6 text-lg font-bold">
-                            Get Started Now
-                        </Button>
-                    </div>
                 </div>
             </div>
         </nav>
