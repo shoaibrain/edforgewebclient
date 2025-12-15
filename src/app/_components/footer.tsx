@@ -30,7 +30,7 @@ const footerLinks = {
 }
 
 const socialLinks = [
-    { icon: Twitter, href: "https://twitter.com/edforge", label: "Twitter" },
+    { icon: Twitter, href: "https://x.com/edforgedotnet", label: "Twitter" },
     { icon: Mail, href: "mailto:shoaibrain@edforge.net", label: "Email" },
 ]
 
@@ -50,7 +50,7 @@ export default function Footer() {
                     </div>
                     <div className="flex flex-col gap-4 sm:flex-row">
                         <a
-                            href="https://edforge-saas-frontend.vercel.app/login"
+                            href="https://edforge-saas-frontend.vercel.app"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
